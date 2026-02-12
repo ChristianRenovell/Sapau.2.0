@@ -1,0 +1,15 @@
+---
+import BrandPage from "../../../components/BrandPage.astro";
+import brands from "../../../data/brands.json";
+
+export async function getStaticPaths() {
+    return brands.map((brand) => ({
+        params: { brand: brand.slug },
+        props: { brandData: brand },
+    }));
+}
+
+const { brandData } = Astro.props;
+---
+
+<BrandPage brandData={brandData} />

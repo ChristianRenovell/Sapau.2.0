@@ -1,0 +1,176 @@
+---
+import { getLangFromUrl, useTranslations } from "../i18n/utils";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const isEn = lang === "en";
+const base = isEn ? "/en" : "";
+
+const navItems = [
+    { name: t("nav.inicio"), href: `${base}/` },
+    { name: t("nav.nosotros"), href: `${base}/#areas` },
+    { name: t("nav.marcas"), href: `${base}/#team` },
+    { name: t("nav.contacto"), href: `${base}/#contact` },
+];
+---
+
+<div
+    class="bg-[#222222] text-xs text-white py-2 px-4 text-center tracking-widest uppercase hidden md:block"
+>
+    {
+        isEn
+            ? "Exclusive supply for the Canary Archipelago • More than 20 years of experience"
+            : "Suministro exclusivo para el Archipiélago Canario • Más de 20 años de experiencia"
+    }
+</div>
+
+<header
+    id="header"
+    class="sticky top-0 left-0 w-full z-50 transition-all duration-300 bg-[#222222]/95 backdrop-blur-md border-b border-white/5 shadow-sm"
+>
+    <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+        <!-- Logo -->
+        <a href={base || "/"} class="flex-shrink-0">
+            <img
+                src="/assets/img/logos/sapauLogo2.png"
+                alt="Sapau Logo"
+                class="h-10 md:h-14 w-auto transform hover:scale-105 transition-transform"
+            />
+        </a>
+
+        <!-- Desktop Navigation -->
+        <nav class="hidden lg:block flex-grow px-12">
+            <ul class="flex justify-center space-x-10">
+                {
+                    navItems.map((item) => (
+                        <li>
+                            <a
+                                href={item.href}
+                                class="text-white text-sm font-medium hover:text-[#e2e63d] transition-colors relative group py-2"
+                            >
+                                {item.name}
+                                <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-[#e2e63d] transition-all duration-300 group-hover:w-full" />
+                            </a>
+                        </li>
+                    ))
+                }
+            </ul>
+        </nav>
+
+        <!-- Right Utilities -->
+        <div class="flex items-center space-x-6">
+            <!-- Language Switcher Desktop -->
+            <div class="hidden sm:flex items-center space-x-3">
+                <a
+                    href="/"
+                    class={`w-6 h-6 hover:scale-110 transition-transform ${lang === "es" ? "ring-2 ring-[#e2e63d] rounded-full" : "opacity-50"}`}
+                >
+                    <img src="/assets/img/es.png" alt="ES" />
+                </a>
+                <a
+                    href="/en"
+                    class={`w-6 h-6 hover:scale-110 transition-transform ${lang === "en" ? "ring-2 ring-[#e2e63d] rounded-full" : "opacity-50"}`}
+                >
+                    <img src="/assets/img/en.png" alt="EN" />
+                </a>
+            </div>
+
+            <!-- Mobile Menu Button -->
+            <button id="mobile-toggle" class="lg:hidden text-white p-2">
+                <svg
+                    id="menu-icon"
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-8 w-8 transition-transform duration-300"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                >
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M4 6h16M4 12h16m-7 6h7"></path>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- Mobile Dropdown Menu -->
+    <div
+        id="mobile-dropdown"
+        class="lg:hidden absolute top-full left-0 w-full bg-[#222222] border-t border-white/10 overflow-hidden max-h-0 transition-all duration-500 ease-in-out shadow-2xl"
+    >
+        <nav class="p-6">
+            <ul class="space-y-6">
+                {
+                    navItems.map((item) => (
+                        <li>
+                            <a
+                                href={item.href}
+                                class="text-xl font-bold text-white hover:text-[#e2e63d] block transition-colors mobile-link"
+                            >
+                                {item.name}
+                            </a>
+                        </li>
+                    ))
+                }
+            </ul>
+
+            <div class="mt-8 pt-8 border-t border-white/10 flex gap-4">
+                <a
+                    href="/"
+                    class={`px-4 py-2 border border-white/20 rounded-lg text-white font-bold text-sm ${lang === "es" ? "bg-[#e2e63d] !text-[#222222] border-transparent" : ""}`}
+                    >ES</a
+                >
+                <a
+                    href="/en"
+                    class={`px-4 py-2 border border-white/20 rounded-lg text-white font-bold text-sm ${lang === "en" ? "bg-[#e2e63d] !text-[#222222] border-transparent" : ""}`}
+                    >EN</a
+                >
+            </div>
+        </nav>
+    </div>
+</header>
+
+<script>
+    const header = document.getElementById("header");
+    const mobileToggle = document.getElementById("mobile-toggle");
+    const mobileDropdown = document.getElementById("mobile-dropdown");
+    const menuIcon = document.getElementById("menu-icon");
+    const mobileLinks = document.querySelectorAll(".mobile-link");
+
+    // Scroll effect
+    window.addEventListener("scroll", () => {
+        if (window.scrollY > 50) {
+            header?.classList.add("bg-[#1a1a1a]");
+        } else {
+            header?.classList.remove("bg-[#1a1a1a]");
+        }
+    });
+
+    // Toggle Dropdown
+    let isOpen = false;
+    const toggleMenu = () => {
+        isOpen = !isOpen;
+        if (isOpen) {
+            mobileDropdown!.style.maxHeight = "400px";
+            menuIcon!.innerHTML =
+                '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />';
+            menuIcon!.classList.add("rotate-90");
+        } else {
+            mobileDropdown!.style.maxHeight = "0px";
+            menuIcon!.innerHTML =
+                '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />';
+            menuIcon!.classList.remove("rotate-90");
+        }
+    };
+
+    mobileToggle?.addEventListener("click", toggleMenu);
+
+    // Close on link click
+    mobileLinks.forEach((link) => {
+        link.addEventListener("click", () => {
+            if (isOpen) toggleMenu();
+        });
+    });
+</script>

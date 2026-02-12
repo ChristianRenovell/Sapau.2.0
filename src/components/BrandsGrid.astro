@@ -1,0 +1,52 @@
+---
+import brands from '../data/brands.json';
+import { getLangFromUrl, useTranslations } from '../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const base = lang === 'en' ? '/en' : '';
+
+const getLogoPath = (path: string) => {
+    return path.replace('../assets/', '/assets/');
+};
+---
+
+<section id="team" class="py-24 px-4 bg-[#f6f6f6]">
+    <div class="max-w-7xl mx-auto">
+        <div class="text-center mb-16">
+            <span class="text-[#e2e63d] font-bold uppercase tracking-[0.2em] text-sm block mb-4">{t('brands.subtitle')}</span>
+            <h2 class="text-4xl md:text-5xl font-bold text-[#222222] mb-6 font-['Playfair_Display']">{t('brands.title')}</h2>
+            <div class="w-24 h-1 bg-[#e2e63d] mx-auto"></div>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
+            {brands.map((brand) => (
+                <a 
+                    href={`${base}/brands/${brand.slug}`} 
+                    class="group bg-white rounded-2xl overflow-hidden border border-[#eeeeee] hover:border-[#e2e63d] transition-all duration-500 hover:shadow-2xl relative block"
+                >
+                    <div class="aspect-square p-8 flex items-center justify-center relative overflow-hidden bg-white">
+                        <img 
+                            src={getLogoPath(brand.logo)} 
+                            alt={brand.brand} 
+                            class="max-w-[70%] max-h-[70%] object-contain filter grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700"
+                        />
+                        
+                        <!-- Hover Indicator Icon -->
+                        <div class="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-all duration-500 -translate-y-2 group-hover:translate-y-0">
+                            <div class="w-8 h-8 rounded-full bg-[#e2e63d] flex items-center justify-center shadow-lg">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-[#222222]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                </svg>
+                            </div>
+                        </div>
+                        
+                        <!-- Simple accent border on hover -->
+                        <div class="absolute inset-x-4 bottom-0 h-1 bg-[#e2e63d] scale-x-0 group-hover:scale-x-100 transition-transform duration-500 rounded-full"></div>
+                    </div>
+                </a>
+            ))}
+        </div>
+    </div>
+</section>
