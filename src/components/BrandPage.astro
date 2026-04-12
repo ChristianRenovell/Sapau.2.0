@@ -49,7 +49,7 @@ const description =
 
                     <div class="flex flex-wrap justify-center gap-4">
                         {
-                            brandData.urlCatalog && (
+                            brandData.urlCatalog != null && brandData.urlCatalog !== "" && !brandData.urlCatalog2 && (
                                 <a
                                     href={brandData.urlCatalog}
                                     target="_blank"
@@ -73,6 +73,31 @@ const description =
                                             : "Catálogo Oficial"}
                                     </span>
                                 </a>
+                            )
+                        }
+                        {
+                            brandData.urlCatalog != null && brandData.urlCatalog !== "" && brandData.urlCatalog2 != null && brandData.urlCatalog2 !== "" && (
+                                <details class="relative group">
+                                    <summary class="obrien-btn !flex !flex-row items-center justify-center gap-3 whitespace-nowrap cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd" />
+                                        </svg>
+                                        <span class="inline-block">
+                                            {lang === "en" ? "Official Catalogs" : "Catálogos Oficiales"}
+                                        </span>
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                        </svg>
+                                    </summary>
+                                    <div class="absolute left-0 right-0 top-full mt-2 bg-white border border-[#eeeeee] rounded-xl shadow-xl z-50 overflow-hidden flex flex-col">
+                                        <a href={brandData.urlCatalog} target="_blank" class="px-6 py-4 text-[#222222] hover:bg-[#f6f6f6] hover:text-[#222222] transition-colors border-b border-[#eeeeee] whitespace-nowrap text-center font-medium block">
+                                            {brandData.catalog1name || (lang === "en" ? "Catalog 1" : "Opción 1")}
+                                        </a>
+                                        <a href={brandData.urlCatalog2} target="_blank" class="px-6 py-4 text-[#222222] hover:bg-[#f6f6f6] hover:text-[#222222] transition-colors whitespace-nowrap text-center font-medium block">
+                                            {brandData.catalog2name || (lang === "en" ? "Catalog 2" : "Opción 2")}
+                                        </a>
+                                    </div>
+                                </details>
                             )
                         }
                         {
@@ -322,7 +347,7 @@ const description =
 
         <form
             id="brand-contact-form"
-            action="https://formspree.io/f/xzbolyoy"
+            action="https://formsubmit.co/ajax/sapau@sapau.com"
             method="POST"
             class="bg-[#f6f6f6] p-12 rounded-3xl shadow-sm border border-[#eeeeee] relative"
         >
