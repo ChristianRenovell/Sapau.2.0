@@ -257,8 +257,25 @@ const t = useTranslations(lang);
           id="contact-form"
           action="https://formsubmit.co/ajax/sapau@sapau.com"
           method="POST"
+          data-success={t("contact.success")}
+          data-error={t("contact.error")}
+          data-conn-error={t("contact.connError")}
           class="bg-[#f6f6f6] p-12 rounded-3xl shadow-sm border border-[#eeeeee] relative"
         >
+          <!-- Anti-spam: hidden honeypot field (bots fill it, FormSubmit discards it) -->
+          <input
+            type="text"
+            name="_honey"
+            tabindex="-1"
+            autocomplete="off"
+            aria-hidden="true"
+            style="display:none"
+          />
+          <input
+            type="hidden"
+            name="_blacklist"
+            value="casino, bitcoin, crypto, viagra, cialis, backlinks, porn, forex, search engine optimization"
+          />
           <div class="grid gap-6">
             <input
               type="text"
@@ -281,6 +298,19 @@ const t = useTranslations(lang);
               rows="4"
               class="w-full bg-white border-none rounded-xl p-5 focus:ring-2 focus:ring-[#e2e63d] transition-all"
             ></textarea>
+            <label class="flex items-start gap-3 text-xs text-[#555555] leading-relaxed">
+              <input
+                type="checkbox"
+                name="privacy_accepted"
+                value="Sí"
+                required
+                class="mt-0.5 accent-[#e2e63d]"
+              />
+              <span>
+                <strong>{t("contact.privacy")}</strong>
+                {t("contact.privacyInfo")}
+              </span>
+            </label>
             <button
               type="submit"
               class="obrien-btn w-full !py-5 shadow-lg shadow-[#e2e63d]/20 flex items-center justify-center gap-3"
@@ -309,6 +339,7 @@ const t = useTranslations(lang);
           form?.addEventListener("submit", async (e) => {
             e.preventDefault();
             const data = new FormData(form);
+            const originalText = btnText!.textContent;
 
             // UI State: Loading
             btnText!.textContent = "...";
@@ -322,16 +353,19 @@ const t = useTranslations(lang);
                 headers: { Accept: "application/json" },
               });
 
-              if (response.ok) {
-                status!.innerHTML = `<p class="text-green-600">¡Mensaje enviado con éxito!</p>`;
+              // FormSubmit can answer 200 with success "false" (e.g. form not activated)
+              const result = await response.json().catch(() => ({}));
+
+              if (response.ok && String(result.success) === "true") {
+                status!.innerHTML = `<p class="text-green-600">${form.dataset.success}</p>`;
                 form.reset();
               } else {
-                status!.innerHTML = `<p class="text-red-500">Error al enviar. Inténtelo más tarde.</p>`;
+                status!.innerHTML = `<p class="text-red-500">${form.dataset.error}</p>`;
               }
             } catch (error) {
-              status!.innerHTML = `<p class="text-red-500">Error de conexión.</p>`;
+              status!.innerHTML = `<p class="text-red-500">${form.dataset.connError}</p>`;
             } finally {
-              btnText!.textContent = "Enviar";
+              btnText!.textContent = originalText;
               btnLoader?.classList.add("hidden");
               status?.classList.remove("hidden");
             }

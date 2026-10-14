@@ -35,7 +35,12 @@ export const ui = {
         'contact.name': 'Nombre completo',
         'contact.email': 'Email de contacto',
         'contact.message': '¿En qué podemos ayudarle?',
-        'contact.send': 'Enviar Consulta'
+        'contact.send': 'Enviar Consulta',
+        'contact.privacy': 'He leído y acepto la información sobre protección de datos.',
+        'contact.privacyInfo': 'Responsable: Comercial Sapau, S.L. Finalidad: atender su consulta. El envío se realiza a través del servicio externo FormSubmit. Puede ejercer sus derechos de acceso, rectificación, supresión y oposición escribiendo a sapau@sapau.com.',
+        'contact.success': '¡Mensaje enviado con éxito!',
+        'contact.error': 'Error al enviar. Inténtelo más tarde.',
+        'contact.connError': 'Error de conexión.'
     },
     en: {
         'nav.inicio': 'Home',
@@ -66,6 +71,11 @@ export const ui = {
         'contact.name': 'Full Name',
         'contact.email': 'Contact Email',
         'contact.message': 'How can we help you?',
-        'contact.send': 'Send Inquiry'
+        'contact.send': 'Send Inquiry',
+        'contact.privacy': 'I have read and accept the data protection information.',
+        'contact.privacyInfo': 'Data controller: Comercial Sapau, S.L. Purpose: to answer your inquiry. The form is sent through the external service FormSubmit. You may exercise your rights of access, rectification, erasure and objection by writing to sapau@sapau.com.',
+        'contact.success': 'Message sent successfully!',
+        'contact.error': 'Sending failed. Please try again later.',
+        'contact.connError': 'Connection error.'
     },
 } as const;
