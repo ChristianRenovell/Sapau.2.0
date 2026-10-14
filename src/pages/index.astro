@@ -1,377 +1,186 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import Header from "../components/Header.astro";
-import BrandsGrid from "../components/BrandsGrid.astro";
 import HeroCarousel from "../components/HeroCarousel.astro";
+import BrandsGrid from "../components/BrandsGrid.astro";
+import ContactSection from "../components/ContactSection.astro";
+import Footer from "../components/Footer.astro";
+import brands from "../data/brands.json";
 import { getLangFromUrl, useTranslations } from "../i18n/utils";
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
+const en = lang === "en";
+
+const facts = [
+    { title: t("info.dist"), desc: t("info.distDesc"), icon: "M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" },
+    { title: t("info.garantia"), desc: t("info.garantiaDesc"), icon: "M12 3l7 3v5c0 4.5-3 8.3-7 10-4-1.7-7-5.5-7-10V6l7-3z M9 12l2 2 4-4" },
+    { title: t("info.soporte"), desc: t("info.soporteDesc"), icon: "M12 3a9 9 0 100 18 9 9 0 000-18z M12 7v5l3 3" },
+];
+
+const areas = [
+    {
+        title: en ? "Pools" : "Piscinas",
+        desc: en
+            ? "Above-ground pools, pool cleaners, filtration, water treatment, covers, accessories and heating."
+            : "Piscinas desmontables, limpiafondos, filtración, tratamiento de agua, cubiertas, accesorios y calefacción.",
+        img: "/assets/img/slide/gre.webp",
+        alt: en ? "Wooden above-ground pool in a garden" : "Piscina elevada de madera en un jardín",
+    },
+    {
+        title: en ? "Garden" : "Jardín",
+        desc: en ? "Chairs, sun loungers, outdoor and beach." : "Sillas, tumbonas, exterior y playa.",
+        img: "/assets/img/crespo-jardin.webp",
+        alt: en ? "Reclining lounger by a pool" : "Tumbona reclinable junto a una piscina",
+    },
+    {
+        title: en ? "Leisure" : "Tiempo libre",
+        desc: en ? "Barbecues, coolers, tents and kayaks." : "Barbacoas, neveras, tiendas y kayaks.",
+        img: "/assets/img/BBK.png",
+        alt: en ? "Barbecue and leisure equipment" : "Barbacoa y equipamiento de tiempo libre",
+    },
+];
+
+const aboutItems = [
+    { title: t("about.item1"), desc: t("about.item1Desc") },
+    { title: t("about.item2"), desc: t("about.item2Desc") },
+    { title: t("about.item3"), desc: t("about.item3Desc") },
+];
+
+const arrowUpRight = "M7 17L17 7M8 7h9v9";
 ---
 
 <Layout
-  title={lang === "en"
+  title={en
     ? "Comercial Sapau SL | Prestige Distribution in Canary Islands"
     : "Comercial Sapau SL | Distribución de Prestigio en Canarias"}
 >
-  <Header />
+  <Header variant="overlay" />
 
   <main>
     <HeroCarousel />
 
-    <!-- Info Banners (O'Brien Style) -->
-    <section class="py-12 bg-white">
-      <div class="max-w-6xl mx-auto px-4">
-        <div
-          class="grid md:grid-cols-3 gap-0 border border-[#eeeeee] divide-x divide-[#eeeeee] rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-shadow"
-        >
-          <div class="p-8 flex items-center space-x-6">
-            <div class="text-[#e2e63d] shrink-0">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-10 w-10"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
-                ></path>
-              </svg>
-            </div>
-            <div>
-              <h5
-                class="font-bold text-[#222222] uppercase tracking-wider text-sm"
-              >
-                {t("info.dist")}
-              </h5>
-              <p class="text-xs text-[#888888]">
-                {t("info.distDesc")}
-              </p>
-            </div>
-          </div>
-          <div class="p-8 flex items-center space-x-6">
-            <div class="text-[#e2e63d] shrink-0">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-10 w-10"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04M12 2.944a11.941 11.941 0 01-8.618 3.04m17.236 0L21 21l-9-4-9 4 1.382-9.584"
-                ></path>
-              </svg>
-            </div>
-            <div>
-              <h5
-                class="font-bold text-[#222222] uppercase tracking-wider text-sm"
-              >
-                {t("info.garantia")}
-              </h5>
-              <p class="text-xs text-[#888888]">
-                {t("info.garantiaDesc")}
-              </p>
-            </div>
-          </div>
-          <div class="p-8 flex items-center space-x-6">
-            <div class="text-[#e2e63d] shrink-0">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-10 w-10"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-              </svg>
-            </div>
-            <div>
-              <h5
-                class="font-bold text-[#222222] uppercase tracking-wider text-sm"
-              >
-                {t("info.soporte")}
-              </h5>
-              <p class="text-xs text-[#888888]">
-                {t("info.soporteDesc")}
-              </p>
-            </div>
+    <!-- Facts strip -->
+    <section class="border-b border-line bg-white">
+      <div class="mx-auto grid max-w-7xl grid-cols-[repeat(auto-fit,minmax(220px,1fr))] px-5 md:px-8">
+        <div class="flex items-center gap-4 py-7 pr-6">
+          <div class="font-display text-[44px] font-extrabold tracking-tight text-ocean">{brands.length}</div>
+          <div class="text-[15px] leading-snug font-semibold">
+            {t("facts.brands")}<br /><span class="font-normal text-muted">{t("facts.brandsDesc")}</span>
           </div>
         </div>
+        {
+          facts.map((fact) => (
+            <div class="flex items-center gap-4 py-7 pr-6">
+              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" class="shrink-0 text-ocean" aria-hidden="true">
+                <path d={fact.icon} />
+              </svg>
+              <div class="text-[15px] leading-snug font-semibold">
+                {fact.title}<br /><span class="font-normal text-muted">{fact.desc}</span>
+              </div>
+            </div>
+          ))
+        }
       </div>
     </section>
 
-    <!-- Categories Grid -->
-    <section id="areas" class="py-24 px-4">
-      <div class="max-w-7xl mx-auto">
-        <div class="section-title">
-          <h2 class="text-4xl font-bold font-['Playfair_Display']">
-            {t("sections.areas")}
-          </h2>
-          <p class="text-[#666666] max-w-2xl mx-auto">
-            {t("sections.areasDesc")}
-          </p>
+    <!-- Areas -->
+    <section id="areas" class="mx-auto max-w-7xl px-5 pt-24 md:px-8 md:pt-32">
+      <div class="mb-12 flex flex-wrap items-end justify-between gap-6">
+        <div class="flex max-w-2xl flex-col gap-4">
+          <div class="eyebrow">{t("sections.areasEyebrow")}</div>
+          <h2 class="text-[clamp(36px,4.4vw,60px)] leading-none font-bold">{t("sections.areas")}</h2>
         </div>
+        <p class="max-w-sm text-[17px] leading-relaxed text-muted">{t("sections.areasDesc")}</p>
+      </div>
 
-        <div class="grid lg:grid-cols-3 gap-10">
+      <div class="flex flex-wrap gap-5">
+        <a
+          href="#marcas"
+          data-area-link="piscinas"
+          class="group relative flex min-h-[460px] flex-[7_1_480px] overflow-hidden rounded-[28px] bg-ink text-white md:min-h-[600px]"
+        >
+          <img src={areas[0].img} alt={areas[0].alt} loading="lazy" class="absolute inset-0 h-full w-full object-cover transition-transform duration-1000 group-hover:scale-105" />
+          <div class="absolute inset-0 bg-gradient-to-b from-ink/0 from-40% to-ink/85"></div>
+          <div class="relative mt-auto flex w-full flex-wrap items-end justify-between gap-5 p-7 md:p-9">
+            <div class="flex max-w-md flex-col gap-2.5">
+              <div class="text-[13px] font-semibold tracking-[0.16em] text-white/75">01</div>
+              <h3 class="text-[44px] leading-none font-bold">{areas[0].title}</h3>
+              <p class="leading-relaxed text-white/90">{areas[0].desc}</p>
+            </div>
+            <span class="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-lime text-ink">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={arrowUpRight} /></svg>
+            </span>
+          </div>
+        </a>
+
+        <div class="flex flex-[5_1_340px] flex-col gap-5">
           {
-            [
-              {
-                title: "PISCINAS",
-                titleEn: "POOLS",
-                img: "/assets/img/gre-mariposa.png",
-                desc: "Piscinas desmontables, limpiafondos, filtración, tratamiento de agua, cubiertas, accesorios, calefacción.",
-                descEn:
-                  "Dismountable pools, pool cleaners, filtration, water treatment, covers, accessories, heating.",
-              },
-              {
-                title: "JARDÍN",
-                titleEn: "GARDEN",
-                img: "/assets/img/crespo-jardin.webp",
-                desc: "Si eres amante del confort y la calidad: disfruta de nuestra amplia gama de sillas, tumbonas, artículos de camping, jardín, exterior y playa.",
-                descEn:
-                  "If you are a lover of comfort and quality: enjoy our wide range of chairs, sun loungers, camping items, garden, outdoor and beach.",
-              },
-              {
-                title: "TIEMPO LIBRE",
-                titleEn: "LEISURE",
-                img: "/assets/img/BBK.png",
-                desc: "Barbacoas, hornillos, neveras, tiendas de campaña, kayaks, etc. Productos versátiles que se adaptan al jardín, a la playa, al camping o a cualquier lugar donde nos lleve nuestro espíritu aventurero.",
-                descEn:
-                  "Barbecues, stoves, coolers, tents, kayaks, etc. Versatile products that adapt to the garden, beach, camping or anywhere that our adventurous spirit takes us.",
-              },
-            ].map((cat) => (
-              <div class="group relative overflow-hidden rounded-3xl cursor-default">
-                <div class="aspect-[4/5] overflow-hidden">
-                  <img
-                    src={cat.img}
-                    class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
-                    alt={cat.title}
-                  />
+            areas.slice(1).map((area, i) => (
+              <a
+                href="#marcas"
+                data-area-link={i === 0 ? "jardin" : "tiempo-libre"}
+                class="group relative flex min-h-[290px] flex-1 overflow-hidden rounded-[28px] bg-ink text-white"
+              >
+                <img src={area.img} alt={area.alt} loading="lazy" class="absolute inset-0 h-full w-full object-cover transition-transform duration-1000 group-hover:scale-105" />
+                <div class="absolute inset-0 bg-gradient-to-b from-ink/0 from-30% to-ink/85"></div>
+                <div class="relative mt-auto flex w-full items-end justify-between gap-4 p-7">
+                  <div class="flex flex-col gap-2">
+                    <div class="text-[13px] font-semibold tracking-[0.16em] text-white/75">0{i + 2}</div>
+                    <h3 class="text-[34px] leading-none font-bold">{area.title}</h3>
+                    <p class="text-[15px] leading-normal text-white/90">{area.desc}</p>
+                  </div>
+                  <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white text-ink transition-colors group-hover:bg-lime">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={arrowUpRight} /></svg>
+                  </span>
                 </div>
-                <div class="absolute inset-0 bg-gradient-to-t from-[#222222] via-transparent to-transparent opacity-100 group-hover:bg-[#222222]/80 transition-all duration-500" />
-                <div class="absolute inset-0 p-10 flex flex-col justify-end">
-                  <h3 class="text-3xl font-bold !text-white mb-4 font-['Playfair_Display'] group-hover:translate-y-[-20px] transition-transform duration-500">
-                    {lang === "en" ? cat.titleEn : cat.title}
-                  </h3>
-                  <p class="text-white/90 text-sm leading-relaxed opacity-0 translate-y-8 group-hover:opacity-100 group-hover:translate-y-[-20px] transition-all duration-500">
-                    {lang === "en" ? cat.descEn : cat.desc}
-                  </p>
-                </div>
-              </div>
+              </a>
             ))
           }
         </div>
       </div>
     </section>
 
-    <!-- Main content Grid (Brands) -->
     <BrandsGrid />
 
-    <!-- Contact Section (Organic & Clean) -->
-    <section id="contact" class="py-32 px-4 bg-white relative">
-      <div
-        class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#e2e63d] to-transparent"
-      >
-      </div>
-      <div class="max-w-5xl mx-auto grid lg:grid-cols-2 gap-20 items-center">
-        <div>
-          <span
-            class="text-[#e2e63d] font-bold uppercase tracking-widest text-sm mb-4 block"
-            >{t("contact.hablemos")}</span
-          >
-          <h2
-            class="text-5xl font-bold mb-8 text-[#222222] font-['Playfair_Display']"
-          >
-            {t("contact.title")}
-          </h2>
-          <p class="text-lg text-[#666666] mb-10 leading-relaxed">
-            {t("contact.desc")}
-          </p>
-
-          <ul class="space-y-6">
-            <li class="flex items-center space-x-4">
-              <div
-                class="w-12 h-12 bg-[#f6f6f6] flex items-center justify-center rounded-xl text-[#e2e63d]"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-6 w-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                  ></path>
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                </svg>
-              </div>
-              <span class="text-[#555555]"
-                >Igueste de Candelaria, 38520, SC de Tenerife</span
-              >
-            </li>
-            <li class="flex items-center space-x-4">
-              <div
-                class="w-12 h-12 bg-[#f6f6f6] flex items-center justify-center rounded-xl text-[#e2e63d]"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-6 w-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                  ></path>
-                </svg>
-              </div>
-              <span class="text-[#555555]">sapau@sapau.com</span>
-            </li>
-          </ul>
+    <!-- About -->
+    <section id="nosotros" class="scroll-mt-20 bg-white">
+      <div class="mx-auto flex max-w-7xl flex-wrap items-center gap-16 px-5 py-24 md:px-8 md:py-32">
+        <div class="relative aspect-square flex-[1_1_440px] overflow-hidden rounded-[28px] bg-line">
+          <img
+            src="/assets/img/slide/Slide3.webp"
+            alt={en ? "Two people on the beach with Coleman chairs and cooler" : "Dos personas en la playa con sillas y nevera Coleman"}
+            loading="lazy"
+            class="h-full w-full object-cover"
+          />
+          <div class="absolute bottom-5 left-5 flex items-center gap-3 rounded-2xl bg-white px-4 py-3.5 text-sm font-semibold">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-ocean" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 0114 0c0 4.8-7 11-7 11z"></path><circle cx="12" cy="10" r="2.5"></circle></svg>
+            Igueste de Candelaria, Tenerife
+          </div>
         </div>
-
-        <form
-          id="contact-form"
-          action="https://formsubmit.co/ajax/sapau@sapau.com"
-          method="POST"
-          data-success={t("contact.success")}
-          data-error={t("contact.error")}
-          data-conn-error={t("contact.connError")}
-          class="bg-[#f6f6f6] p-12 rounded-3xl shadow-sm border border-[#eeeeee] relative"
-        >
-          <!-- Anti-spam: hidden honeypot field (bots fill it, FormSubmit discards it) -->
-          <input
-            type="text"
-            name="_honey"
-            tabindex="-1"
-            autocomplete="off"
-            aria-hidden="true"
-            style="display:none"
-          />
-          <input
-            type="hidden"
-            name="_blacklist"
-            value="casino, bitcoin, crypto, viagra, cialis, backlinks, porn, forex, search engine optimization"
-          />
-          <div class="grid gap-6">
-            <input
-              type="text"
-              name="name"
-              required
-              placeholder={t("contact.name")}
-              class="w-full bg-white border-none rounded-xl p-5 focus:ring-2 focus:ring-[#e2e63d] transition-all"
-            />
-            <input
-              type="email"
-              name="email"
-              required
-              placeholder={t("contact.email")}
-              class="w-full bg-white border-none rounded-xl p-5 focus:ring-2 focus:ring-[#e2e63d] transition-all"
-            />
-            <textarea
-              name="message"
-              required
-              placeholder={t("contact.message")}
-              rows="4"
-              class="w-full bg-white border-none rounded-xl p-5 focus:ring-2 focus:ring-[#e2e63d] transition-all"
-            ></textarea>
-            <label class="flex items-start gap-3 text-xs text-[#555555] leading-relaxed">
-              <input
-                type="checkbox"
-                name="privacy_accepted"
-                value="Sí"
-                required
-                class="mt-0.5 accent-[#e2e63d]"
-              />
-              <span>
-                <strong>{t("contact.privacy")}</strong>
-                {t("contact.privacyInfo")}
-              </span>
-            </label>
-            <button
-              type="submit"
-              class="obrien-btn w-full !py-5 shadow-lg shadow-[#e2e63d]/20 flex items-center justify-center gap-3"
-            >
-              <span id="btn-text">{t("contact.send")}</span>
-              <div
-                id="btn-loader"
-                class="hidden w-5 h-5 border-2 border-[#222222] border-t-transparent rounded-full animate-spin"
-              >
-              </div>
-            </button>
-          </div>
-          <div id="form-status" class="mt-4 text-center hidden">
-            <p class="text-sm font-bold"></p>
-          </div>
-        </form>
-
-        <script>
-          const form = document.getElementById(
-            "contact-form",
-          ) as HTMLFormElement;
-          const status = document.getElementById("form-status");
-          const btnText = document.getElementById("btn-text");
-          const btnLoader = document.getElementById("btn-loader");
-
-          form?.addEventListener("submit", async (e) => {
-            e.preventDefault();
-            const data = new FormData(form);
-            const originalText = btnText!.textContent;
-
-            // UI State: Loading
-            btnText!.textContent = "...";
-            btnLoader?.classList.remove("hidden");
-            status?.classList.add("hidden");
-
-            try {
-              const response = await fetch(form.action, {
-                method: "POST",
-                body: data,
-                headers: { Accept: "application/json" },
-              });
-
-              // FormSubmit can answer 200 with success "false" (e.g. form not activated)
-              const result = await response.json().catch(() => ({}));
-
-              if (response.ok && String(result.success) === "true") {
-                status!.innerHTML = `<p class="text-green-600">${form.dataset.success}</p>`;
-                form.reset();
-              } else {
-                status!.innerHTML = `<p class="text-red-500">${form.dataset.error}</p>`;
-              }
-            } catch (error) {
-              status!.innerHTML = `<p class="text-red-500">${form.dataset.connError}</p>`;
-            } finally {
-              btnText!.textContent = originalText;
-              btnLoader?.classList.add("hidden");
-              status?.classList.remove("hidden");
+        <div class="flex flex-[1_1_440px] flex-col gap-7">
+          <div class="eyebrow">{t("about.eyebrow")}</div>
+          <h2 class="text-[clamp(34px,4vw,52px)] leading-[1.02] font-bold">{t("about.title")}</h2>
+          <p class="text-lg leading-relaxed text-muted">{t("about.desc")}</p>
+          <ol class="flex flex-col border-t border-line">
+            {
+              aboutItems.map((item, i) => (
+                <li class="flex items-baseline gap-5 border-b border-line py-5">
+                  <span class="min-w-7 font-display text-[15px] font-bold text-ocean">{String(i + 1).padStart(2, "0")}</span>
+                  <div class="flex flex-col gap-1">
+                    <span class="text-[17px] font-semibold">{item.title}</span>
+                    <span class="text-[15px] text-muted">{item.desc}</span>
+                  </div>
+                </li>
+              ))
             }
-          });
-        </script>
+          </ol>
+        </div>
       </div>
     </section>
+
+    <ContactSection />
   </main>
+
+  <Footer />
 </Layout>

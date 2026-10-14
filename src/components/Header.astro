@@ -1,131 +1,117 @@
 ---
 import { getLangFromUrl, useTranslations } from "../i18n/utils";
 
+interface Props {
+    /** "overlay": transparent over the hero until the page scrolls. */
+    variant?: "overlay" | "solid";
+}
+
+const { variant = "solid" } = Astro.props;
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
-const isEn = lang === "en";
-const base = isEn ? "/en" : "";
+const base = lang === "en" ? "/en" : "";
+
+// Path of the same page in the other language
+const path = Astro.url.pathname.replace(/^\/en(?=\/|$)/, "") || "/";
+const esHref = path;
+const enHref = path === "/" ? "/en" : `/en${path}`;
 
 const navItems = [
     { name: t("nav.inicio"), href: `${base}/` },
-    { name: t("nav.nosotros"), href: `${base}/#areas` },
-    { name: t("nav.marcas"), href: `${base}/#team` },
-    { name: t("nav.contacto"), href: `${base}/#contact` },
+    { name: t("nav.nosotros"), href: `${base}/#nosotros` },
+    { name: t("nav.marcas"), href: `${base}/#marcas` },
+    { name: t("nav.contacto"), href: `${base}/#contacto` },
 ];
 ---
 
-<div
-    class="bg-[#222222] text-xs text-white py-2 px-4 text-center tracking-widest uppercase hidden md:block"
->
-    {
-        isEn
-            ? "Exclusive supply for the Canary Archipelago • More than 20 years of experience"
-            : "Suministro exclusivo para el Archipiélago Canario • Más de 20 años de experiencia"
-    }
-</div>
-
 <header
     id="header"
-    class="sticky top-0 left-0 w-full z-50 transition-all duration-300 bg-[#222222]/95 backdrop-blur-md border-b border-white/5 shadow-sm"
+    data-variant={variant}
+    class:list={[
+        "top-0 left-0 z-50 w-full transition-colors duration-300",
+        variant === "overlay" ? "fixed" : "sticky bg-ink",
+    ]}
 >
-    <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-        <!-- Logo -->
-        <a href={base || "/"} class="flex-shrink-0">
+    <div class="mx-auto flex max-w-7xl items-center justify-between gap-5 px-5 py-4 md:px-8 md:py-5">
+        <a href={base || "/"} class="shrink-0">
             <img
                 src="/assets/img/logos/sapauLogo2.png"
-                alt="Sapau Logo"
-                class="h-10 md:h-14 w-auto transform hover:scale-105 transition-transform"
+                alt="Comercial SAPAU"
+                class="h-9 w-auto md:h-11"
             />
         </a>
 
-        <!-- Desktop Navigation -->
-        <nav class="hidden lg:block flex-grow px-12">
-            <ul class="flex justify-center space-x-10">
-                {
-                    navItems.map((item) => (
-                        <li>
-                            <a
-                                href={item.href}
-                                class="text-white text-sm font-medium hover:text-[#e2e63d] transition-colors relative group py-2"
-                            >
-                                {item.name}
-                                <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-[#e2e63d] transition-all duration-300 group-hover:w-full" />
-                            </a>
-                        </li>
-                    ))
-                }
-            </ul>
+        <nav aria-label="Principal" class="hidden items-center gap-1 lg:flex">
+            {
+                navItems.map((item) => (
+                    <a
+                        href={item.href}
+                        class="px-3.5 py-3 text-[15px] font-medium text-white/80 transition-colors hover:text-white"
+                    >
+                        {item.name}
+                    </a>
+                ))
+            }
+            <span class="mx-2 h-5 w-px bg-white/25"></span>
+            <a
+                href={esHref}
+                aria-label="Español"
+                class:list={[
+                    "px-1.5 py-3 text-[13px] font-semibold tracking-widest",
+                    lang === "es" ? "text-white" : "text-white/55 hover:text-white",
+                ]}>ES</a
+            >
+            <a
+                href={enHref}
+                aria-label="English"
+                class:list={[
+                    "px-1.5 py-3 text-[13px] font-semibold tracking-widest",
+                    lang === "en" ? "text-white" : "text-white/55 hover:text-white",
+                ]}>EN</a
+            >
+            <a href={`${base}/#contacto`} class="ml-3 rounded-full bg-lime px-5 py-3 text-[15px] font-semibold text-ink transition-colors hover:bg-white">
+                {t("nav.cta")}
+            </a>
         </nav>
 
-        <!-- Right Utilities -->
-        <div class="flex items-center space-x-6">
-            <!-- Language Switcher Desktop -->
-            <div class="hidden sm:flex items-center space-x-3">
-                <a
-                    href="/"
-                    class={`w-6 h-6 hover:scale-110 transition-transform ${lang === "es" ? "ring-2 ring-[#e2e63d] rounded-full" : "opacity-50"}`}
-                >
-                    <img src="/assets/img/es.png" alt="ES" />
-                </a>
-                <a
-                    href="/en"
-                    class={`w-6 h-6 hover:scale-110 transition-transform ${lang === "en" ? "ring-2 ring-[#e2e63d] rounded-full" : "opacity-50"}`}
-                >
-                    <img src="/assets/img/en.png" alt="EN" />
-                </a>
-            </div>
-
-            <!-- Mobile Menu Button -->
-            <button id="mobile-toggle" class="lg:hidden text-white p-2">
-                <svg
-                    id="menu-icon"
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="h-8 w-8 transition-transform duration-300"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                >
-                    <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M4 6h16M4 12h16m-7 6h7"></path>
-                </svg>
-            </button>
-        </div>
+        <button
+            id="mobile-toggle"
+            type="button"
+            aria-label={t("nav.menu")}
+            aria-expanded="false"
+            aria-controls="mobile-dropdown"
+            class="flex h-11 w-11 items-center justify-center rounded-full text-white lg:hidden"
+        >
+            <svg id="menu-icon" xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                <path d="M4 7h16M4 12h16M4 17h10"></path>
+            </svg>
+        </button>
     </div>
 
-    <!-- Mobile Dropdown Menu -->
-    <div
-        id="mobile-dropdown"
-        class="lg:hidden absolute top-full left-0 w-full bg-[#222222] border-t border-white/10 overflow-hidden max-h-0 transition-all duration-500 ease-in-out shadow-2xl"
-    >
-        <nav class="p-6">
-            <ul class="space-y-6">
-                {
-                    navItems.map((item) => (
-                        <li>
-                            <a
-                                href={item.href}
-                                class="text-xl font-bold text-white hover:text-[#e2e63d] block transition-colors mobile-link"
-                            >
-                                {item.name}
-                            </a>
-                        </li>
-                    ))
-                }
-            </ul>
-
-            <div class="mt-8 pt-8 border-t border-white/10 flex gap-4">
+    <!-- Mobile menu -->
+    <div id="mobile-dropdown" class="hidden border-t border-white/10 bg-ink lg:hidden">
+        <nav aria-label="Principal" class="flex flex-col gap-1 px-5 py-6">
+            {
+                navItems.map((item) => (
+                    <a href={item.href} class="mobile-link py-3 font-display text-2xl font-bold text-white">
+                        {item.name}
+                    </a>
+                ))
+            }
+            <div class="mt-5 flex items-center gap-3 border-t border-white/10 pt-6">
                 <a
-                    href="/"
-                    class={`px-4 py-2 border border-white/20 rounded-lg text-white font-bold text-sm ${lang === "es" ? "bg-[#e2e63d] !text-[#222222] border-transparent" : ""}`}
-                    >ES</a
+                    href={esHref}
+                    class:list={[
+                        "rounded-full px-4 py-2.5 text-sm font-semibold",
+                        lang === "es" ? "bg-lime text-ink" : "border border-white/25 text-white",
+                    ]}>ES</a
                 >
                 <a
-                    href="/en"
-                    class={`px-4 py-2 border border-white/20 rounded-lg text-white font-bold text-sm ${lang === "en" ? "bg-[#e2e63d] !text-[#222222] border-transparent" : ""}`}
-                    >EN</a
+                    href={enHref}
+                    class:list={[
+                        "rounded-full px-4 py-2.5 text-sm font-semibold",
+                        lang === "en" ? "bg-lime text-ink" : "border border-white/25 text-white",
+                    ]}>EN</a
                 >
             </div>
         </nav>
@@ -139,35 +125,29 @@ const navItems = [
     const menuIcon = document.getElementById("menu-icon");
     const mobileLinks = document.querySelectorAll(".mobile-link");
 
-    // Scroll effect
-    window.addEventListener("scroll", () => {
-        if (window.scrollY > 50) {
-            header?.classList.add("bg-[#1a1a1a]");
-        } else {
-            header?.classList.remove("bg-[#1a1a1a]");
-        }
-    });
+    const MENU_PATH = '<path d="M4 7h16M4 12h16M4 17h10"></path>';
+    const CLOSE_PATH = '<path d="M6 18L18 6M6 6l12 12"></path>';
 
-    // Toggle Dropdown
     let isOpen = false;
-    const toggleMenu = () => {
-        isOpen = !isOpen;
-        if (isOpen) {
-            mobileDropdown!.style.maxHeight = "400px";
-            menuIcon!.innerHTML =
-                '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />';
-            menuIcon!.classList.add("rotate-90");
-        } else {
-            mobileDropdown!.style.maxHeight = "0px";
-            menuIcon!.innerHTML =
-                '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />';
-            menuIcon!.classList.remove("rotate-90");
-        }
+
+    // Overlay header gets a solid background once the page scrolls or the menu opens
+    const updateBackground = () => {
+        if (header?.dataset.variant !== "overlay") return;
+        header.classList.toggle("bg-ink", isOpen || window.scrollY > 40);
     };
 
-    mobileToggle?.addEventListener("click", toggleMenu);
+    const toggleMenu = () => {
+        isOpen = !isOpen;
+        mobileDropdown?.classList.toggle("hidden", !isOpen);
+        mobileToggle?.setAttribute("aria-expanded", String(isOpen));
+        menuIcon!.innerHTML = isOpen ? CLOSE_PATH : MENU_PATH;
+        updateBackground();
+    };
 
-    // Close on link click
+    window.addEventListener("scroll", updateBackground, { passive: true });
+    updateBackground();
+
+    mobileToggle?.addEventListener("click", toggleMenu);
     mobileLinks.forEach((link) => {
         link.addEventListener("click", () => {
             if (isOpen) toggleMenu();

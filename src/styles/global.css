@@ -1,1 +1,49 @@
 @import "tailwindcss";
+
+@theme {
+  --color-ink: #14122b;
+  --color-ink-deep: #0e0c20;
+  --color-ocean: #0b6e99;
+  --color-lime: #e2e63d;
+  --color-ground: #f2f4f5;
+  --color-line: #e3e6ea;
+  --color-muted: #5a5f6b;
+
+  --font-sans: "Figtree", system-ui, sans-serif;
+  --font-display: "Bricolage Grotesque", "Figtree", sans-serif;
+}
+
+@layer components {
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    letter-spacing: -0.03em;
+  }
+
+  /* Section eyebrow: small uppercase label above headings */
+  .eyebrow {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-ocean);
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2.5 rounded-full bg-lime px-7 py-4 font-semibold text-ink transition-colors hover:bg-white;
+  }
+
+  .btn-dark {
+    @apply inline-flex items-center justify-center gap-2.5 rounded-full bg-ink px-7 py-4 font-semibold text-white transition-colors hover:bg-ocean;
+  }
+
+  .btn-outline {
+    @apply inline-flex items-center justify-center gap-2 rounded-full border-[1.5px] px-6 py-[15px] font-semibold transition-colors;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-ocean);
+    outline-offset: 3px;
+  }
+}

@@ -1,477 +1,223 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import Header from "./Header.astro";
+import ContactSection from "./ContactSection.astro";
+import Footer from "./Footer.astro";
+import brands from "../data/brands.json";
 import { getLangFromUrl, useTranslations } from "../i18n/utils";
 
-const { brandData } = Astro.props;
-const lang = getLangFromUrl(Astro.url);
-const t = useTranslations(lang);
-
-const getLogoPath = (path: string) => {
-    return path.replace("../assets/", "/assets/");
+type Brand = (typeof brands)[number] & {
+    image?: string;
+    urlCatalog2?: string | null;
+    catalog1name?: string;
+    catalog2name?: string;
 };
 
+const { brandData } = Astro.props as { brandData: Brand };
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const en = lang === "en";
+const base = en ? "/en" : "";
+
+const getLogoPath = (path: string) => path.replace("../assets/", "/assets/");
+
 const title = `${brandData.brand} | Comercial Sapau`;
-const description =
-    lang === "en" ? brandData.description_en : brandData.description_es;
+const description = en ? brandData.description_en : brandData.description_es;
+const category = en ? brandData.category_en : brandData.category_es;
+
+const catalogs = [
+    { name: brandData.catalog1name || t("brand.catalog"), url: brandData.urlCatalog },
+    { name: brandData.catalog2name, url: brandData.urlCatalog2 },
+].filter((c): c is { name: string; url: string } => Boolean(c.url && c.name));
+
+// Same-area brands first, then the rest
+const others = [
+    ...brands.filter((b) => b.slug !== brandData.slug && b.area === brandData.area),
+    ...brands.filter((b) => b.slug !== brandData.slug && b.area !== brandData.area),
+].slice(0, 4);
+
+const downloadIcon = "M12 4v11M7 10l5 5 5-5M5 20h14";
+const externalIcon = "M7 17L17 7M8 7h9v9";
 ---
 
-<Layout title={title}>
+<Layout title={title} description={description}>
     <Header />
 
-    <main class="bg-white">
-        <!-- Hero Section -->
-        <section
-            class="relative py-24 bg-[#f6f6f6] overflow-hidden border-b border-gray-100"
-        >
-            <div
-                class="absolute top-0 right-0 w-1/3 h-full bg-[#e2e63d] opacity-5 -skew-x-12 translate-x-1/4"
-            >
-            </div>
+    <main>
+        <!-- Brand hero -->
+        <section class="mx-auto max-w-7xl px-5 pt-8 pb-20 md:px-8 md:pt-10 md:pb-24">
+            <nav aria-label={t("brand.breadcrumb")} class="mb-8 flex flex-wrap items-center gap-2 text-sm text-muted md:mb-10">
+                <a href={base || "/"} class="py-2.5 hover:text-ink">{t("nav.inicio")}</a>
+                <span aria-hidden="true">/</span>
+                <a href={`${base}/#marcas`} class="py-2.5 hover:text-ink">{t("nav.marcas")}</a>
+                <span aria-hidden="true">/</span>
+                <span class="font-semibold text-ink" aria-current="page">{brandData.brand}</span>
+            </nav>
 
-            <div class="max-w-7xl mx-auto px-4 relative z-10">
-                <div class="max-w-4xl mx-auto text-center mb-20">
-                    <span
-                        class="text-[#e2e63d] font-bold uppercase tracking-[0.3em] text-sm mb-6 block"
-                    >
-                        {lang === "en" ? "Partner Brand" : "Marca Partner"}
-                    </span>
-                    <h1
-                        class="text-6xl md:text-8xl font-bold mb-8 text-[#222222] font-['Playfair_Display']"
-                    >
+            <div class="flex flex-wrap items-stretch gap-12 md:gap-14">
+                <div class="flex flex-[1_1_460px] flex-col justify-center gap-7">
+                    <div class="flex flex-wrap gap-2">
+                        <span class="rounded-full border border-line bg-white px-3.5 py-2 text-[13px] font-semibold">{category}</span>
+                        <span class="rounded-full border border-line bg-white px-3.5 py-2 text-[13px] font-semibold">{t("brand.official")}</span>
+                    </div>
+                    <h1 class="text-[clamp(64px,10vw,152px)] leading-[0.88] font-extrabold tracking-[-0.05em] break-words">
                         {brandData.brand}
                     </h1>
-                    <p
-                        class="text-xl text-[#666666] leading-relaxed mb-12 mx-auto"
-                    >
-                        {description}
-                    </p>
-
-                    <div class="flex flex-wrap justify-center gap-4">
+                    <p class="max-w-xl text-lg leading-relaxed text-[#3e4350] md:text-xl">{description}</p>
+                    <div class="flex flex-wrap gap-3 pt-1">
                         {
-                            brandData.urlCatalog != null && brandData.urlCatalog !== "" && !brandData.urlCatalog2 && (
-                                <a
-                                    href={brandData.urlCatalog}
-                                    target="_blank"
-                                    class="obrien-btn !flex !flex-row items-center justify-center gap-3 whitespace-nowrap"
-                                >
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        class="h-5 w-5 shrink-0"
-                                        viewBox="0 0 20 20"
-                                        fill="currentColor"
-                                    >
-                                        <path
-                                            fill-rule="evenodd"
-                                            d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z"
-                                            clip-rule="evenodd"
-                                        />
-                                    </svg>
-                                    <span class="inline-block">
-                                        {lang === "en"
-                                            ? "Official Catalog"
-                                            : "Catálogo Oficial"}
-                                    </span>
+                            catalogs.length > 0 && (
+                                <a href="#catalogos" class="btn-dark">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={downloadIcon} /></svg>
+                                    {catalogs.length > 1 ? t("brand.catalogsEyebrow") : t("brand.catalog")}
                                 </a>
-                            )
-                        }
-                        {
-                            brandData.urlCatalog != null && brandData.urlCatalog !== "" && brandData.urlCatalog2 != null && brandData.urlCatalog2 !== "" && (
-                                <details class="relative group">
-                                    <summary class="obrien-btn !flex !flex-row items-center justify-center gap-3 whitespace-nowrap cursor-pointer list-none [&::-webkit-details-marker]:hidden">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" viewBox="0 0 20 20" fill="currentColor">
-                                            <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd" />
-                                        </svg>
-                                        <span class="inline-block">
-                                            {lang === "en" ? "Official Catalogs" : "Catálogos Oficiales"}
-                                        </span>
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 shrink-0 transition-transform group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor">
-                                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                        </svg>
-                                    </summary>
-                                    <div class="absolute left-0 right-0 top-full mt-2 bg-white border border-[#eeeeee] rounded-xl shadow-xl z-50 overflow-hidden flex flex-col">
-                                        <a href={brandData.urlCatalog} target="_blank" class="px-6 py-4 text-[#222222] hover:bg-[#f6f6f6] hover:text-[#222222] transition-colors border-b border-[#eeeeee] whitespace-nowrap text-center font-medium block">
-                                            {brandData.catalog1name || (lang === "en" ? "Catalog 1" : "Opción 1")}
-                                        </a>
-                                        <a href={brandData.urlCatalog2} target="_blank" class="px-6 py-4 text-[#222222] hover:bg-[#f6f6f6] hover:text-[#222222] transition-colors whitespace-nowrap text-center font-medium block">
-                                            {brandData.catalog2name || (lang === "en" ? "Catalog 2" : "Opción 2")}
-                                        </a>
-                                    </div>
-                                </details>
                             )
                         }
                         {
                             brandData.urlWeb && (
-                                <a
-                                    href={brandData.urlWeb}
-                                    target="_blank"
-                                    class="obrien-btn !bg-[#222222] !text-white hover:!bg-[#e2e63d] hover:!text-[#222222] !flex !flex-row items-center justify-center gap-3 whitespace-nowrap"
-                                >
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        class="h-5 w-5 shrink-0"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        stroke="currentColor"
-                                    >
-                                        <path
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                            stroke-width="2"
-                                            d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                                        />
-                                    </svg>
-                                    <span class="inline-block">
-                                        {lang === "en"
-                                            ? "Official Website"
-                                            : "Web Oficial"}
-                                    </span>
+                                <a href={brandData.urlWeb} target="_blank" rel="noopener" class="btn-outline border-[#cdd2d8] text-ink hover:border-ink">
+                                    {new URL(brandData.urlWeb).hostname.replace(/^www\./, "")}
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={externalIcon} /></svg>
                                 </a>
                             )
                         }
                     </div>
                 </div>
 
-                <!-- Social Hub: YouTube & Instagram -->
-                <div class="mt-32">
-                    <div
-                        class="flex flex-col md:flex-row items-end justify-between mb-16 gap-8"
-                    >
-                        <div class="max-w-xl">
-                            <h2
-                                class="text-4xl md:text-5xl font-bold text-[#222222] font-['Playfair_Display'] leading-tight"
-                            >
-                                {
-                                    lang === "en"
-                                        ? "Social Connect"
-                                        : "Conecta con la Marca"
-                                }
-                            </h2>
-                            <p class="text-[#666666] mt-4 text-lg italic">
-                                {
-                                    lang === "en"
-                                        ? `Stay updated with the latest from ${brandData.brand} on social media.`
-                                        : `Sigue la actualidad y las novedades de ${brandData.brand} en nuestras redes.`
-                                }
-                            </p>
+                <div class="relative flex min-h-[360px] flex-[1_1_460px] items-center justify-center overflow-hidden rounded-[32px] bg-white md:min-h-[520px]">
+                    {
+                        brandData.image ? (
+                            <img src={brandData.image} alt={brandData.brand} class="absolute inset-0 h-full w-full object-cover" />
+                        ) : (
+                            <img src={getLogoPath(brandData.logo)} alt={`Logo ${brandData.brand}`} class="max-h-[45%] max-w-[65%] object-contain" />
+                        )
+                    }
+                </div>
+            </div>
+        </section>
+
+        <!-- Catalogs -->
+        {
+            catalogs.length > 0 && (
+                <section id="catalogos" class="scroll-mt-24 bg-white">
+                    <div class="mx-auto max-w-7xl px-5 py-20 md:px-8 md:py-24">
+                        <div class="mb-10 flex flex-wrap items-end justify-between gap-5">
+                            <div class="flex flex-col gap-3.5">
+                                <div class="eyebrow">{t("brand.catalogsEyebrow")}</div>
+                                <h2 class="text-[clamp(32px,3.6vw,48px)] leading-none font-bold">{t("brand.catalogsTitle")}</h2>
+                            </div>
+                            <p class="max-w-sm leading-relaxed text-muted">{t("brand.catalogsDesc")}</p>
+                        </div>
+                        <div class="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-4">
+                            {catalogs.map((catalog, i) => (
+                                <a
+                                    href={catalog.url}
+                                    target="_blank"
+                                    rel="noopener"
+                                    class="group flex items-center gap-5 rounded-[22px] bg-ground p-6 transition-colors hover:bg-[#e8ebee]"
+                                >
+                                    <span
+                                        class:list={[
+                                            "flex h-[108px] w-[84px] shrink-0 flex-col justify-between rounded-[10px] p-3 font-display font-bold",
+                                            i === 0 ? "bg-ink text-lime" : "bg-ocean text-white",
+                                        ]}
+                                    >
+                                        <span class="text-base leading-tight break-words">{brandData.brand}</span>
+                                        <span class="text-xs text-white/70">PDF</span>
+                                    </span>
+                                    <span class="flex flex-1 flex-col gap-1.5">
+                                        <span class="font-display text-2xl font-bold tracking-tight">{catalog.name}</span>
+                                        <span class="text-sm text-muted">PDF · {t("brand.download")}</span>
+                                    </span>
+                                    <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white transition-colors group-hover:bg-lime">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={downloadIcon} /></svg>
+                                    </span>
+                                </a>
+                            ))}
                         </div>
                     </div>
+                </section>
+            )
+        }
 
-                    <div class="flex flex-col gap-16">
-                        <!-- YouTube Section -->
-                        {
-                            brandData.youtubeChannelId && (
-                                <div class="space-y-6">
-                                    <div class="flex items-center gap-3 text-red-600 font-bold uppercase tracking-widest text-sm">
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            class="w-6 h-6"
-                                            viewBox="0 0 24 24"
-                                            fill="currentColor"
-                                        >
-                                            <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z" />
-                                        </svg>
-                                        Video Wall
-                                    </div>
-                                    <div class="bg-black rounded-[2.5rem] p-2 shadow-2xl aspect-video relative overflow-hidden group border border-white/5">
-                                        <iframe
-                                            width="100%"
-                                            height="100%"
-                                            src={`https://www.youtube.com/embed/videoseries?list=${brandData.youtubeChannelId.replace(/^UC/, "UU")}`}
-                                            title="YouTube Video Wall"
-                                            frameborder="0"
-                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                            allowfullscreen
-                                            class="w-full h-full rounded-[2rem]"
-                                        />
-                                    </div>
-                                    <div class="flex justify-between items-center px-4">
-                                        <a
-                                            href={`https://www.youtube.com/${brandData.youtubeHandle || "channel/" + brandData.youtubeChannelId}`}
-                                            target="_blank"
-                                            class="inline-flex items-center gap-2 text-[#222222] font-bold hover:text-red-600 transition-colors"
-                                        >
-                                            {lang === "en"
-                                                ? "Visit YouTube Channel"
-                                                : "Ver canal de YouTube"}
-                                            <svg
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                class="h-4 w-4"
-                                                fill="none"
-                                                viewBox="0 0 24 24"
-                                                stroke="currentColor"
-                                            >
-                                                <path
-                                                    stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                                    stroke-width="2"
-                                                    d="M14 5l7 7m0 0l-7 7m7-7H3"
-                                                />
-                                            </svg>
-                                        </a>
-                                    </div>
-                                </div>
-                            )
-                        }
-
-                        <!-- Instagram CTA Banner -->
-                        {
-                            brandData.instagramHandle && (
-                                <div class="bg-[#fcfcfc] rounded-[2.5rem] p-8 md:p-12 border border-gray-100 shadow-xl flex flex-col md:flex-row items-center gap-8 md:gap-16 hover:bg-white transition-colors duration-500">
-                                    <div class="relative shrink-0">
-                                        <div class="w-24 h-24 bg-gradient-to-tr from-[#f9ce34] via-[#ee2a7b] to-[#6228d7] rounded-[2rem] flex items-center justify-center border-4 border-white shadow-2xl rotate-6 transform hover:rotate-0 transition-transform duration-500">
-                                            <svg
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                class="w-12 h-12 text-white"
-                                                viewBox="0 0 24 24"
-                                                fill="currentColor"
-                                            >
-                                                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 1.366.062 2.633.332 3.608 1.308.975.975 1.245 2.242 1.308 3.608.058 1.266.07 1.646.07 4.85s-.012 3.584-.07 4.85c-.063 1.366-.333 2.633-1.308 3.608-.975.975-2.242 1.245-3.608 1.308-1.266.058-1.646.07-4.85.07s-3.584-.012-4.85-.07c-1.366-.063-2.633-.333-3.608-1.308-.975-.975-1.245-2.242-1.308-3.608-.058-1.266-.07-1.646-.07-4.85s.012-3.584.07-4.85c.062-1.366.332-2.633 1.308-3.608.975-.975 2.242-1.245 3.608-1.308 1.266-.058 1.646-.07 4.85-.07zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948s.014 3.667.072 4.947c.2 4.337 2.615 6.76 6.98 6.96 1.281.058 1.689.072 4.948.072s3.667-.014 4.947-.072c4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948s-.014-3.667-.072-4.947c-.2-4.337-2.615-6.76-6.98-6.96-1.281-.058-1.689-.072-4.948-.072zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
-                                            </svg>
-                                        </div>
-                                    </div>
-                                    <div class="flex-grow text-center md:text-left space-y-3">
-                                        <h3 class="text-3xl font-bold text-[#222222]">
-                                            Instagram
-                                        </h3>
-                                        <p class="text-gray-500 leading-relaxed max-w-lg text-sm">
-                                            {lang === "en"
-                                                ? "Check out our latest news, photos and stories on our official profile."
-                                                : "Descubre nuestras últimas fotos, novedades y contenido exclusivo en nuestro perfil oficial."}
-                                        </p>
-                                        <p class="text-2xl font-bold text-pink-600 font-['Playfair_Display'] italic">
-                                            @{brandData.instagramHandle}
-                                        </p>
-                                    </div>
-                                    <div class="shrink-0 w-full md:w-auto">
-                                        <a
-                                            href={`https://www.instagram.com/${brandData.instagramHandle}`}
-                                            target="_blank"
-                                            class="obrien-btn !bg-white !text-[#222222] hover:!bg-gradient-to-tr hover:from-[#f9ce34] hover:via-[#ee2a7b] hover:to-[#6228d7] hover:!text-white !w-full md:!w-64 shadow-lg border-2 border-gray-100 hover:border-[#ee2a7b] bg-clip-padding transition-all duration-500 py-4"
-                                        >
-                                            {lang === "en"
-                                                ? "Visit Profile"
-                                                : "Visitar Perfil"}
-                                        </a>
-                                    </div>
-                                </div>
-                            )
-                        }
+        <!-- Social -->
+        {
+            (brandData.youtubeChannelId || brandData.instagramHandle) && (
+                <section class="mx-auto max-w-7xl px-5 py-20 md:px-8 md:py-24">
+                    <div class="mb-9 flex flex-wrap items-end justify-between gap-5">
+                        <div class="flex flex-col gap-3.5">
+                            <div class="eyebrow">{t("brand.videosEyebrow")}</div>
+                            <h2 class="text-[clamp(32px,3.6vw,48px)] leading-none font-bold">
+                                {t("brand.videosTitle")} {brandData.brand}.
+                            </h2>
+                        </div>
+                        <div class="flex flex-wrap gap-2">
+                            {brandData.youtubeChannelId && (
+                                <a
+                                    href={`https://www.youtube.com/${brandData.youtubeHandle || "channel/" + brandData.youtubeChannelId}`}
+                                    target="_blank"
+                                    rel="noopener"
+                                    class="btn-outline border-[#cdd2d8] py-3 text-[15px] text-ink hover:border-ink"
+                                >
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="5" width="19" height="14" rx="4" /><path d="M10 9.5v5l4.5-2.5z" /></svg>
+                                    {brandData.youtubeHandle || "YouTube"}
+                                </a>
+                            )}
+                            {brandData.instagramHandle && (
+                                <a
+                                    href={`https://www.instagram.com/${brandData.instagramHandle}`}
+                                    target="_blank"
+                                    rel="noopener"
+                                    class="btn-outline border-[#cdd2d8] py-3 text-[15px] text-ink hover:border-ink"
+                                >
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="4" /><circle cx="17.5" cy="6.5" r="0.8" /></svg>
+                                    @{brandData.instagramHandle}
+                                </a>
+                            )}
+                        </div>
                     </div>
+                    {brandData.youtubeChannelId && (
+                        <div class="aspect-video overflow-hidden rounded-[28px] bg-ink">
+                            <iframe
+                                src={`https://www.youtube.com/embed/videoseries?list=${brandData.youtubeChannelId.replace(/^UC/, "UU")}`}
+                                title={`YouTube · ${brandData.brand}`}
+                                loading="lazy"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowfullscreen
+                                class="h-full w-full border-0"
+                            />
+                        </div>
+                    )}
+                </section>
+            )
+        }
+
+        <ContactSection
+            brand={brandData.brand}
+            title={t("brand.ctaTitle").replace("{brand}", brandData.brand)}
+            description={t("brand.ctaDesc")}
+        />
+
+        <!-- Other brands -->
+        <section class="bg-white">
+            <div class="mx-auto max-w-7xl px-5 py-20 md:px-8">
+                <div class="mb-7 flex flex-wrap items-center justify-between gap-5">
+                    <h2 class="text-[32px] font-bold">{t("brand.others")}</h2>
+                    <a href={`${base}/#marcas`} class="py-3 font-semibold text-ocean hover:text-ink">{t("brand.allBrands")}</a>
+                </div>
+                <div class="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-4">
+                    {
+                        others.map((b) => (
+                            <a href={`${base}/brands/${b.slug}`} class="flex flex-col gap-7 rounded-[20px] bg-ground p-6 transition-colors hover:bg-[#e8ebee]">
+                                <span class="text-xs font-semibold tracking-[0.14em] text-ocean uppercase">{en ? b.category_en : b.category_es}</span>
+                                <span class="font-display text-[28px] font-bold tracking-tight">{b.brand}</span>
+                            </a>
+                        ))
+                    }
                 </div>
             </div>
         </section>
     </main>
+
+    <Footer />
 </Layout>
-<!-- Contact Section -->
-<section
-    id="contact"
-    class="py-32 px-4 bg-white relative border-t border-gray-100"
->
-    <div class="max-w-5xl mx-auto grid lg:grid-cols-2 gap-20 items-center">
-        <div>
-            <span
-                class="text-[#e2e63d] font-bold uppercase tracking-widest text-sm mb-4 block"
-            >
-                {t("contact.hablemos")}
-            </span>
-            <h2
-                class="text-5xl font-bold mb-8 text-[#222222] font-['Playfair_Display']"
-            >
-                {
-                    lang === "en"
-                        ? `Interested in ${brandData.brand}?`
-                        : `¿Interesado en ${brandData.brand}?`
-                }
-            </h2>
-            <p class="text-lg text-[#666666] mb-10 leading-relaxed">
-                {
-                    lang === "en"
-                        ? "As official distributors in the Canary Islands, we can offer technical advice and exclusive conditions for your business."
-                        : "Como distribuidores oficiales en Canarias, podemos ofrecerle asesoramiento técnico y condiciones exclusivas para su negocio."
-                }
-            </p>
-
-            <ul class="space-y-6">
-                <li class="flex items-center space-x-4">
-                    <div
-                        class="w-12 h-12 bg-[#f6f6f6] flex items-center justify-center rounded-xl text-[#e2e63d]"
-                    >
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            class="h-6 w-6"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                        >
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="2"
-                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                            ></path>
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="2"
-                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                        </svg>
-                    </div>
-                    <span class="text-[#555555]"
-                        >Igueste de Candelaria, 38520, SC de Tenerife</span
-                    >
-                </li>
-                <li class="flex items-center space-x-4">
-                    <div
-                        class="w-12 h-12 bg-[#f6f6f6] flex items-center justify-center rounded-xl text-[#e2e63d]"
-                    >
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            class="h-6 w-6"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                        >
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="2"
-                                d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                            ></path>
-                        </svg>
-                    </div>
-                    <span class="text-[#555555]">sapau@sapau.com</span>
-                </li>
-            </ul>
-        </div>
-
-        <form
-            id="brand-contact-form"
-            action="https://formsubmit.co/ajax/sapau@sapau.com"
-            method="POST"
-            data-success={t("contact.success")}
-            data-error={t("contact.error")}
-            data-conn-error={t("contact.connError")}
-            class="bg-[#f6f6f6] p-12 rounded-3xl shadow-sm border border-[#eeeeee] relative"
-        >
-            <!-- Anti-spam: hidden honeypot field (bots fill it, FormSubmit discards it) -->
-            <input
-                type="text"
-                name="_honey"
-                tabindex="-1"
-                autocomplete="off"
-                aria-hidden="true"
-                style="display:none"
-            />
-            <input
-                type="hidden"
-                name="_blacklist"
-                value="casino, bitcoin, crypto, viagra, cialis, backlinks, porn, forex, search engine optimization"
-            />
-            <div class="grid gap-6">
-                <input
-                    type="text"
-                    name="name"
-                    required
-                    placeholder={t("contact.name")}
-                    class="w-full bg-white border-none rounded-xl p-5 focus:ring-2 focus:ring-[#e2e63d] transition-all"
-                />
-                <input
-                    type="email"
-                    name="email"
-                    required
-                    placeholder={t("contact.email")}
-                    class="w-full bg-white border-none rounded-xl p-5 focus:ring-2 focus:ring-[#e2e63d] transition-all"
-                />
-                <textarea
-                    name="message"
-                    required
-                    placeholder={t("contact.message")}
-                    rows="4"
-                    class="w-full bg-white border-none rounded-xl p-5 focus:ring-2 focus:ring-[#e2e63d] transition-all"
-                ></textarea>
-                <!-- Capture brand name automatically -->
-                <input
-                    type="hidden"
-                    name="brand_interest"
-                    value={brandData.brand}
-                />
-                <label class="flex items-start gap-3 text-xs text-[#555555] leading-relaxed">
-                    <input
-                        type="checkbox"
-                        name="privacy_accepted"
-                        value="Sí"
-                        required
-                        class="mt-0.5 accent-[#e2e63d]"
-                    />
-                    <span>
-                        <strong>{t("contact.privacy")}</strong>
-                        {t("contact.privacyInfo")}
-                    </span>
-                </label>
-
-                <button
-                    type="submit"
-                    class="obrien-btn w-full !py-5 shadow-lg shadow-[#e2e63d]/20 flex items-center justify-center gap-3"
-                >
-                    <span id="brand-btn-text">{t("contact.send")}</span>
-                    <div
-                        id="brand-btn-loader"
-                        class="hidden w-5 h-5 border-2 border-[#222222] border-t-transparent rounded-full animate-spin"
-                    >
-                    </div>
-                </button>
-            </div>
-            <div id="brand-form-status" class="mt-4 text-center hidden">
-                <p class="text-sm font-bold"></p>
-            </div>
-        </form>
-
-        <script>
-            const bForm = document.getElementById(
-                "brand-contact-form",
-            ) as HTMLFormElement;
-            const bStatus = document.getElementById("brand-form-status");
-            const bBtnText = document.getElementById("brand-btn-text");
-            const bBtnLoader = document.getElementById("brand-btn-loader");
-
-            bForm?.addEventListener("submit", async (e) => {
-                e.preventDefault();
-                const data = new FormData(bForm);
-                const originalText = bBtnText!.textContent;
-
-                bBtnText!.textContent = "...";
-                bBtnLoader?.classList.remove("hidden");
-                bStatus?.classList.add("hidden");
-
-                try {
-                    const response = await fetch(bForm.action, {
-                        method: "POST",
-                        body: data,
-                        headers: { Accept: "application/json" },
-                    });
-
-                    // FormSubmit can answer 200 with success "false" (e.g. form not activated)
-                    const result = await response.json().catch(() => ({}));
-
-                    if (response.ok && String(result.success) === "true") {
-                        bStatus!.innerHTML = `<p class="text-green-600">${bForm.dataset.success}</p>`;
-                        bForm.reset();
-                    } else {
-                        bStatus!.innerHTML = `<p class="text-red-500">${bForm.dataset.error}</p>`;
-                    }
-                } catch (error) {
-                    bStatus!.innerHTML = `<p class="text-red-500">${bForm.dataset.connError}</p>`;
-                } finally {
-                    bBtnText!.textContent = originalText;
-                    bBtnLoader?.classList.add("hidden");
-                    bStatus?.classList.remove("hidden");
-                }
-            });
-        </script>
-    </div>
-</section>
-
-<style>
-    @reference "tailwindcss";
-</style>

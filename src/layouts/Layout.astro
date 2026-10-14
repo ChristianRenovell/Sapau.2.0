@@ -1,5 +1,6 @@
 ---
 import "../styles/global.css";
+import { getLangFromUrl } from "../i18n/utils";
 
 interface Props {
 	title: string;
@@ -10,79 +11,27 @@ const {
 	title,
 	description = "Comercial Sapau SL - Distribución en el Archipiélago Canario",
 } = Astro.props;
+
+const lang = getLangFromUrl(Astro.url);
 ---
 
 <!doctype html>
-<html lang="es" class="scroll-smooth">
+<html lang={lang} class="scroll-smooth">
 	<head>
 		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<link rel="icon" type="image/png" href="/assets/img/logos/logo.png" />
 		<title>{title}</title>
 		<meta name="description" content={description} />
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<link
-			href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Poppins:wght@300;400;500;600;700&display=swap"
+			href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&display=swap"
 			rel="stylesheet"
 		/>
 	</head>
-	<body
-		class="bg-[#ffffff] text-[#555555] font-['Poppins',sans-serif] leading-relaxed"
-	>
+	<body class="bg-ground font-sans text-ink antialiased">
 		<slot />
 	</body>
 </html>
 
-<style is:global>
-	@reference "tailwindcss";
-
-	:root {
-		--obrien-green: #e2e63d; /* Characteristic Lime Green of O'Brien */
-		--obrien-dark: #222222;
-		--obrien-light: #f6f6f6;
-		--obrien-border: #eeeeee;
-	}
-
-	h1,
-	h2,
-	h3,
-	h4,
-	h5,
-	h6 {
-		font-family: "Playfair Display", serif;
-		color: #222222;
-		font-weight: 700;
-	}
-
-	.obrien-btn {
-		@apply inline-block px-10 py-3 bg-[#e2e63d] text-[#222222] font-semibold rounded-full hover:bg-[#222222] hover:text-white transition-all duration-300 uppercase text-sm tracking-widest;
-	}
-
-	.section-title {
-		@apply text-center mb-12;
-	}
-
-	.section-title h2 {
-		@apply text-4xl md:text-5xl mb-4 relative inline-block pb-4;
-	}
-
-	.section-title h2::after {
-		content: "";
-		@apply absolute bottom-0 left-1/2 -translate-x-1/2 w-20 h-1 bg-[#e2e63d];
-	}
-
-	/* Scrollbar styling */
-	::-webkit-scrollbar {
-		width: 8px;
-	}
-	::-webkit-scrollbar-track {
-		background: #f1f1f1;
-	}
-	::-webkit-scrollbar-thumb {
-		background: #e2e63d;
-	}
-	::-webkit-scrollbar-thumb:hover {
-		background: #222222;
-	}
-</style>

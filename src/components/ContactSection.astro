@@ -1,0 +1,144 @@
+---
+import { getLangFromUrl, useTranslations } from "../i18n/utils";
+
+interface Props {
+    /** Brand the inquiry is about; sent as a hidden field. */
+    brand?: string;
+    title?: string;
+    description?: string;
+}
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const { brand, title = t("contact.title"), description = t("contact.desc") } = Astro.props;
+
+const fieldClass =
+    "w-full rounded-xl border-[1.5px] border-[#cdd2d8] bg-[#f7f8f9] px-4 py-3.5 text-base text-ink transition-colors focus:border-ocean focus:bg-white focus:outline-none";
+---
+
+<section id="contacto" class="scroll-mt-20 bg-ink text-white">
+    <div class="mx-auto flex max-w-7xl flex-wrap items-start gap-16 px-5 py-24 md:px-8 md:py-32">
+        <div class="flex flex-[1_1_420px] flex-col gap-7">
+            <div class="text-[13px] font-semibold tracking-[0.18em] text-lime uppercase">{t("contact.hablemos")}</div>
+            <h2 class="text-[clamp(38px,4.6vw,64px)] leading-none font-bold">{title}</h2>
+            <p class="max-w-lg text-lg leading-relaxed text-white/80">{description}</p>
+            <div class="flex flex-col gap-3.5 pt-3">
+                <a href="mailto:sapau@sapau.com" class="flex items-center gap-4 text-[17px] font-medium text-white hover:text-lime">
+                    <span class="flex h-12 w-12 items-center justify-center rounded-[14px] bg-white/10">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="M3 7l9 6 9-6"></path></svg>
+                    </span>
+                    sapau@sapau.com
+                </a>
+                <div class="flex items-center gap-4 text-[17px] font-medium">
+                    <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-[14px] bg-white/10">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 0114 0c0 4.8-7 11-7 11z"></path><circle cx="12" cy="10" r="2.5"></circle></svg>
+                    </span>
+                    Igueste de Candelaria, 38520, S/C de Tenerife
+                </div>
+            </div>
+        </div>
+
+        <form
+            action="https://formsubmit.co/ajax/sapau@sapau.com"
+            method="POST"
+            data-contact-form
+            data-success={t("contact.success")}
+            data-error={t("contact.error")}
+            data-conn-error={t("contact.connError")}
+            class="flex flex-[1_1_440px] flex-col gap-5 rounded-[28px] bg-white p-7 text-ink md:p-10"
+        >
+            <!-- Anti-spam: hidden honeypot field (bots fill it, FormSubmit discards it) -->
+            <input type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" style="display:none" />
+            <input
+                type="hidden"
+                name="_blacklist"
+                value="casino, bitcoin, crypto, viagra, cialis, backlinks, porn, forex, search engine optimization"
+            />
+            {brand && <input type="hidden" name="brand_interest" value={brand} />}
+
+            <div class="flex flex-wrap gap-4">
+                <label class="flex flex-[1_1_200px] flex-col gap-2 text-sm font-semibold">
+                    {t("contact.name")}
+                    <input type="text" name="name" required autocomplete="name" class={fieldClass} />
+                </label>
+                <label class="flex flex-[1_1_200px] flex-col gap-2 text-sm font-semibold">
+                    {t("contact.email")}
+                    <input type="email" name="email" required autocomplete="email" class={fieldClass} />
+                </label>
+            </div>
+            <label class="flex flex-col gap-2 text-sm font-semibold">
+                {t("contact.topic")}
+                <select name="topic" class={fieldClass}>
+                    <option>{t("contact.topic1")}</option>
+                    <option>{t("contact.topic2")}</option>
+                    <option>{t("contact.topic3")}</option>
+                    <option>{t("contact.topic4")}</option>
+                </select>
+            </label>
+            <label class="flex flex-col gap-2 text-sm font-semibold">
+                {t("contact.message")}
+                <textarea name="message" required rows="5" class:list={[fieldClass, "resize-y"]}></textarea>
+            </label>
+            <label class="flex items-start gap-3 text-[13px] leading-relaxed text-[#4a4f5a]">
+                <input type="checkbox" name="privacy_accepted" value="Sí" required class="mt-0.5 h-5 w-5 shrink-0 accent-ink" />
+                <span>
+                    <strong class="font-semibold text-ink">{t("contact.privacy")}</strong>
+                    {t("contact.privacyInfo")}
+                </span>
+            </label>
+            <button type="submit" class="btn-dark w-full py-[18px]">
+                <span data-btn-text>{t("contact.send")}</span>
+                <span data-btn-loader class="hidden h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent"></span>
+            </button>
+            <p data-form-status class="hidden text-center text-sm font-semibold" role="status"></p>
+        </form>
+    </div>
+</section>
+
+<script>
+    document.querySelectorAll<HTMLFormElement>("[data-contact-form]").forEach((form) => {
+        const status = form.querySelector<HTMLElement>("[data-form-status]")!;
+        const btnText = form.querySelector<HTMLElement>("[data-btn-text]")!;
+        const btnLoader = form.querySelector<HTMLElement>("[data-btn-loader]")!;
+
+        const showStatus = (message: string | undefined, ok: boolean) => {
+            status.textContent = message ?? "";
+            status.classList.toggle("text-green-700", ok);
+            status.classList.toggle("text-red-600", !ok);
+            status.classList.remove("hidden");
+        };
+
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const data = new FormData(form);
+            const originalText = btnText.textContent;
+
+            btnText.textContent = "...";
+            btnLoader.classList.remove("hidden");
+            status.classList.add("hidden");
+
+            try {
+                const response = await fetch(form.action, {
+                    method: "POST",
+                    body: data,
+                    headers: { Accept: "application/json" },
+                });
+
+                // FormSubmit can answer 200 with success "false" (e.g. form not activated)
+                const result = await response.json().catch(() => ({}));
+
+                if (response.ok && String(result.success) === "true") {
+                    showStatus(form.dataset.success, true);
+                    form.reset();
+                } else {
+                    showStatus(form.dataset.error, false);
+                }
+            } catch (error) {
+                showStatus(form.dataset.connError, false);
+            } finally {
+                btnText.textContent = originalText;
+                btnLoader.classList.add("hidden");
+            }
+        });
+    });
+</script>
