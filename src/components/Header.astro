@@ -1,5 +1,5 @@
 ---
-import { getLangFromUrl, useTranslations } from "../i18n/utils";
+import { getLangFromUrl, useTranslations, withBase, stripBase } from "../i18n/utils";
 
 interface Props {
     /** "overlay": transparent over the hero until the page scrolls. */
@@ -9,12 +9,12 @@ interface Props {
 const { variant = "solid" } = Astro.props;
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
-const base = lang === "en" ? "/en" : "";
+const base = withBase(lang === "en" ? "/en" : "");
 
 // Path of the same page in the other language
-const path = Astro.url.pathname.replace(/^\/en(?=\/|$)/, "") || "/";
-const esHref = path;
-const enHref = path === "/" ? "/en" : `/en${path}`;
+const path = stripBase(Astro.url.pathname).replace(/^\/en(?=\/|$)/, "") || "/";
+const esHref = withBase(path);
+const enHref = withBase(path === "/" ? "/en" : `/en${path}`);
 
 const navItems = [
     { name: t("nav.inicio"), href: `${base}/` },
@@ -33,9 +33,9 @@ const navItems = [
     ]}
 >
     <div class="mx-auto flex max-w-7xl items-center justify-between gap-5 px-5 py-4 md:px-8 md:py-5">
-        <a href={base || "/"} class="shrink-0">
+        <a href={`${base}/`} class="shrink-0">
             <img
-                src="/assets/img/logos/sapauLogo2.png"
+                src={withBase("/assets/img/logos/sapauLogo2.png")}
                 alt="Comercial SAPAU"
                 class="h-9 w-auto md:h-11"
             />

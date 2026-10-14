@@ -6,7 +6,7 @@ import BrandsGrid from "../components/BrandsGrid.astro";
 import ContactSection from "../components/ContactSection.astro";
 import Footer from "../components/Footer.astro";
 import brands from "../data/brands.json";
-import { getLangFromUrl, useTranslations } from "../i18n/utils";
+import { getLangFromUrl, useTranslations, withBase } from "../i18n/utils";
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
@@ -100,7 +100,7 @@ const arrowUpRight = "M7 17L17 7M8 7h9v9";
           data-area-link="piscinas"
           class="group relative flex min-h-[460px] flex-[7_1_480px] overflow-hidden rounded-[28px] bg-ink text-white md:min-h-[600px]"
         >
-          <img src={areas[0].img} alt={areas[0].alt} loading="lazy" class="absolute inset-0 h-full w-full object-cover transition-transform duration-1000 group-hover:scale-105" />
+          <img src={withBase(areas[0].img)} alt={areas[0].alt} loading="lazy" class="absolute inset-0 h-full w-full object-cover transition-transform duration-1000 group-hover:scale-105" />
           <div class="absolute inset-0 bg-gradient-to-b from-ink/0 from-40% to-ink/85"></div>
           <div class="relative mt-auto flex w-full flex-wrap items-end justify-between gap-5 p-7 md:p-9">
             <div class="flex max-w-md flex-col gap-2.5">
@@ -122,7 +122,7 @@ const arrowUpRight = "M7 17L17 7M8 7h9v9";
                 data-area-link={i === 0 ? "jardin" : "tiempo-libre"}
                 class="group relative flex min-h-[290px] flex-1 overflow-hidden rounded-[28px] bg-ink text-white"
               >
-                <img src={area.img} alt={area.alt} loading="lazy" class="absolute inset-0 h-full w-full object-cover transition-transform duration-1000 group-hover:scale-105" />
+                <img src={withBase(area.img)} alt={area.alt} loading="lazy" class="absolute inset-0 h-full w-full object-cover transition-transform duration-1000 group-hover:scale-105" />
                 <div class="absolute inset-0 bg-gradient-to-b from-ink/0 from-30% to-ink/85"></div>
                 <div class="relative mt-auto flex w-full items-end justify-between gap-4 p-7">
                   <div class="flex flex-col gap-2">
@@ -148,7 +148,7 @@ const arrowUpRight = "M7 17L17 7M8 7h9v9";
       <div class="mx-auto flex max-w-7xl flex-wrap items-center gap-16 px-5 py-24 md:px-8 md:py-32">
         <div class="relative aspect-square flex-[1_1_440px] overflow-hidden rounded-[28px] bg-line">
           <img
-            src="/assets/img/slide/Slide3.webp"
+            src={withBase("/assets/img/slide/Slide3.webp")}
             alt={en ? "Two people on the beach with Coleman chairs and cooler" : "Dos personas en la playa con sillas y nevera Coleman"}
             loading="lazy"
             class="h-full w-full object-cover"

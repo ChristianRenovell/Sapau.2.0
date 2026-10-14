@@ -4,7 +4,7 @@ import Header from "./Header.astro";
 import ContactSection from "./ContactSection.astro";
 import Footer from "./Footer.astro";
 import brands from "../data/brands.json";
-import { getLangFromUrl, useTranslations } from "../i18n/utils";
+import { getLangFromUrl, useTranslations, withBase } from "../i18n/utils";
 
 type Brand = (typeof brands)[number] & {
     image?: string;
@@ -17,17 +17,17 @@ const { brandData } = Astro.props as { brandData: Brand };
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 const en = lang === "en";
-const base = en ? "/en" : "";
+const base = withBase(en ? "/en" : "");
 
-const getLogoPath = (path: string) => path.replace("../assets/", "/assets/");
+const getLogoPath = (path: string) => withBase(path.replace("../assets/", "/assets/"));
 
 const title = `${brandData.brand} | Comercial Sapau`;
 const description = en ? brandData.description_en : brandData.description_es;
 const category = en ? brandData.category_en : brandData.category_es;
 
 const catalogs = [
-    { name: brandData.catalog1name || t("brand.catalog"), url: brandData.urlCatalog },
-    { name: brandData.catalog2name, url: brandData.urlCatalog2 },
+    { name: brandData.catalog1name || t("brand.catalog"), url: brandData.urlCatalog && withBase(brandData.urlCatalog) },
+    { name: brandData.catalog2name, url: brandData.urlCatalog2 && withBase(brandData.urlCatalog2) },
 ].filter((c): c is { name: string; url: string } => Boolean(c.url && c.name));
 
 // Same-area brands first, then the rest
@@ -47,7 +47,7 @@ const externalIcon = "M7 17L17 7M8 7h9v9";
         <!-- Brand hero -->
         <section class="mx-auto max-w-7xl px-5 pt-8 pb-20 md:px-8 md:pt-10 md:pb-24">
             <nav aria-label={t("brand.breadcrumb")} class="mb-8 flex flex-wrap items-center gap-2 text-sm text-muted md:mb-10">
-                <a href={base || "/"} class="py-2.5 hover:text-ink">{t("nav.inicio")}</a>
+                <a href={`${base}/`} class="py-2.5 hover:text-ink">{t("nav.inicio")}</a>
                 <span aria-hidden="true">/</span>
                 <a href={`${base}/#marcas`} class="py-2.5 hover:text-ink">{t("nav.marcas")}</a>
                 <span aria-hidden="true">/</span>
@@ -87,7 +87,7 @@ const externalIcon = "M7 17L17 7M8 7h9v9";
                 <div class="relative flex min-h-[360px] flex-[1_1_460px] items-center justify-center overflow-hidden rounded-[32px] bg-white md:min-h-[520px]">
                     {
                         brandData.image ? (
-                            <img src={brandData.image} alt={brandData.brand} class="absolute inset-0 h-full w-full object-cover" />
+                            <img src={withBase(brandData.image)} alt={brandData.brand} class="absolute inset-0 h-full w-full object-cover" />
                         ) : (
                             <img src={getLogoPath(brandData.logo)} alt={`Logo ${brandData.brand}`} class="max-h-[45%] max-w-[65%] object-contain" />
                         )

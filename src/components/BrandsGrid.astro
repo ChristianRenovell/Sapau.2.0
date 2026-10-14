@@ -1,10 +1,10 @@
 ---
 import brands from "../data/brands.json";
-import { getLangFromUrl, useTranslations } from "../i18n/utils";
+import { getLangFromUrl, useTranslations, withBase } from "../i18n/utils";
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
-const base = lang === "en" ? "/en" : "";
+const base = withBase(lang === "en" ? "/en" : "");
 
 const filters = [
     { id: "all", label: t("brands.all") },

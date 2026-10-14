@@ -1,9 +1,9 @@
 ---
-import { getLangFromUrl, useTranslations } from "../i18n/utils";
+import { getLangFromUrl, useTranslations, withBase } from "../i18n/utils";
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
-const base = lang === "en" ? "/en" : "";
+const base = withBase(lang === "en" ? "/en" : "");
 
 const slides = [
     {
@@ -36,7 +36,7 @@ const pad = (n: number) => String(n).padStart(2, "0");
     {
         slides.map((slide, i) => (
             <img
-                src={slide.image}
+                src={withBase(slide.image)}
                 alt={slide.alt}
                 data-hero-bg
                 loading={i === 0 ? "eager" : "lazy"}

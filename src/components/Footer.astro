@@ -1,15 +1,15 @@
 ---
-import { getLangFromUrl, useTranslations } from "../i18n/utils";
+import { getLangFromUrl, useTranslations, withBase } from "../i18n/utils";
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
-const base = lang === "en" ? "/en" : "";
+const base = withBase(lang === "en" ? "/en" : "");
 ---
 
 <footer class="bg-ink-deep text-white/70">
     <div class="mx-auto flex max-w-7xl flex-col gap-10 px-5 pt-14 pb-10 md:px-8">
         <div class="flex flex-wrap items-center justify-between gap-7">
-            <img src="/assets/img/logos/sapauLogo2.png" alt="Comercial SAPAU" class="h-10 w-auto" />
+            <img src={withBase("/assets/img/logos/sapauLogo2.png")} alt="Comercial SAPAU" class="h-10 w-auto" />
             <nav aria-label={t("footer.nav")} class="flex flex-wrap gap-1">
                 <a href={`${base}/#nosotros`} class="p-3 text-[15px] text-white/80 hover:text-white">{t("nav.nosotros")}</a>
                 <a href={`${base}/#marcas`} class="p-3 text-[15px] text-white/80 hover:text-white">{t("nav.marcas")}</a>
