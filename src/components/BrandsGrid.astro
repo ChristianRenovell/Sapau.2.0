@@ -5,6 +5,7 @@ import { getLangFromUrl, useTranslations, withBase } from "../i18n/utils";
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 const base = withBase(lang === "en" ? "/en" : "");
+const getLogoPath = (path: string) => withBase(path.replace("../assets/", "/assets/"));
 
 const filters = [
     { id: "all", label: t("brands.all") },
@@ -50,7 +51,18 @@ const filters = [
                         </span>
                         <span class="text-[13px] text-muted tabular-nums">{String(i + 1).padStart(2, "0")}</span>
                     </div>
-                    <div class="font-display text-[34px] leading-none font-bold tracking-tight">{brand.brand}</div>
+                    {brand.logo ? (
+                        <div class="flex h-20 items-center">
+                            <img
+                                src={getLogoPath(brand.logo)}
+                                alt={brand.brand}
+                                loading="lazy"
+                                class="max-h-full max-w-[75%] object-contain object-left transition-transform duration-300 group-hover:scale-105"
+                            />
+                        </div>
+                    ) : (
+                        <div class="font-display text-[34px] leading-none font-bold tracking-tight">{brand.brand}</div>
+                    )}
                     <div class="flex items-center justify-between border-t border-[#eef0f2] pt-4">
                         <span class="text-[15px] font-semibold">{t("brands.view")}</span>
                         <span class="flex h-9 w-9 items-center justify-center rounded-full bg-ground transition-colors group-hover:bg-lime">
