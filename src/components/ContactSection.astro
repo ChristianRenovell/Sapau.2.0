@@ -13,10 +13,10 @@ const t = useTranslations(lang);
 const { brand, title = t("contact.title"), description = t("contact.desc") } = Astro.props;
 
 const fieldClass =
-    "w-full rounded-xl border-[1.5px] border-[#cdd2d8] bg-[#f7f8f9] px-4 py-3.5 text-base text-ink transition-colors focus:border-ocean focus:bg-white focus:outline-none";
+    "w-full rounded-xl border-[1.5px] border-[#7d838e] bg-[#f7f8f9] px-4 py-3.5 text-base text-ink transition-colors focus:border-ocean focus:bg-white";
 ---
 
-<section id="contacto" class="scroll-mt-20 bg-ink text-white">
+<section id="contacto" class="on-dark bg-ink text-white">
     <div class="mx-auto flex max-w-7xl flex-wrap items-start gap-16 px-5 py-24 md:px-8 md:py-32">
         <div class="flex flex-[1_1_420px] flex-col gap-7">
             <div class="text-[13px] font-semibold tracking-[0.18em] text-lime uppercase">{t("contact.hablemos")}</div>
@@ -45,7 +45,7 @@ const fieldClass =
             data-success={t("contact.success")}
             data-error={t("contact.error")}
             data-conn-error={t("contact.connError")}
-            class="flex flex-[1_1_440px] flex-col gap-5 rounded-[28px] bg-white p-7 text-ink md:p-10"
+            class="on-light flex flex-[1_1_440px] flex-col gap-5 rounded-[28px] bg-white p-7 text-ink md:p-10"
         >
             <!-- Anti-spam: hidden honeypot field (bots fill it, FormSubmit discards it) -->
             <input type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" style="display:none" />
@@ -90,7 +90,8 @@ const fieldClass =
                 <span data-btn-text>{t("contact.send")}</span>
                 <span data-btn-loader class="hidden h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent"></span>
             </button>
-            <p data-form-status class="hidden text-center text-sm font-semibold" role="status"></p>
+            <!-- Always in the DOM (empty when idle) so screen readers announce each new message -->
+            <p data-form-status class="text-center text-sm font-semibold empty:hidden" role="status"></p>
         </form>
     </div>
 </section>
@@ -105,7 +106,6 @@ const fieldClass =
             status.textContent = message ?? "";
             status.classList.toggle("text-green-700", ok);
             status.classList.toggle("text-red-600", !ok);
-            status.classList.remove("hidden");
         };
 
         form.addEventListener("submit", async (e) => {
@@ -115,7 +115,7 @@ const fieldClass =
 
             btnText.textContent = "...";
             btnLoader.classList.remove("hidden");
-            status.classList.add("hidden");
+            status.textContent = "";
 
             try {
                 const response = await fetch(form.action, {

@@ -42,8 +42,28 @@
     @apply inline-flex items-center justify-center gap-2 rounded-full border-[1.5px] px-6 py-[15px] font-semibold transition-colors;
   }
 
+  /* Focus ring: ocean on light backgrounds, lime inside dark ones (.on-dark), back to ocean in light islands (.on-light) */
   :focus-visible {
-    outline: 2px solid var(--color-ocean);
+    outline: 2px solid var(--focus-ring, var(--color-ocean));
     outline-offset: 3px;
+  }
+
+  .on-dark {
+    --focus-ring: var(--color-lime);
+  }
+
+  .on-light {
+    --focus-ring: var(--color-ocean);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

@@ -29,9 +29,16 @@ const navItems = [
     data-variant={variant}
     class:list={[
         "top-0 left-0 z-50 w-full transition-colors duration-300",
+        "on-dark",
         variant === "overlay" ? "fixed" : "sticky bg-ink",
     ]}
 >
+    <a
+        href="#contenido"
+        class="absolute top-3 left-3 z-[60] -translate-y-24 rounded-full bg-lime px-5 py-3 text-[15px] font-semibold text-ink focus:translate-y-0"
+    >
+        {t("nav.skip")}
+    </a>
     <div class="mx-auto flex max-w-7xl items-center justify-between gap-5 px-5 py-4 md:px-8 md:py-5">
         <a href={`${base}/`} class="shrink-0">
             <img
@@ -41,7 +48,7 @@ const navItems = [
             />
         </a>
 
-        <nav aria-label="Principal" class="hidden items-center gap-1 lg:flex">
+        <nav aria-label={t("nav.main")} class="hidden items-center gap-1 lg:flex">
             {
                 navItems.map((item) => (
                     <a
@@ -56,6 +63,9 @@ const navItems = [
             <a
                 href={esHref}
                 aria-label="Español"
+                lang="es"
+                hreflang="es"
+                aria-current={lang === "es" ? "true" : undefined}
                 class:list={[
                     "px-1.5 py-3 text-[13px] font-semibold tracking-widest",
                     lang === "es" ? "text-white" : "text-white/55 hover:text-white",
@@ -64,6 +74,9 @@ const navItems = [
             <a
                 href={enHref}
                 aria-label="English"
+                lang="en"
+                hreflang="en"
+                aria-current={lang === "en" ? "true" : undefined}
                 class:list={[
                     "px-1.5 py-3 text-[13px] font-semibold tracking-widest",
                     lang === "en" ? "text-white" : "text-white/55 hover:text-white",
@@ -78,6 +91,8 @@ const navItems = [
             id="mobile-toggle"
             type="button"
             aria-label={t("nav.menu")}
+            data-label-open={t("nav.menu")}
+            data-label-close={t("nav.closeMenu")}
             aria-expanded="false"
             aria-controls="mobile-dropdown"
             class="flex h-11 w-11 items-center justify-center rounded-full text-white lg:hidden"
@@ -90,7 +105,7 @@ const navItems = [
 
     <!-- Mobile menu -->
     <div id="mobile-dropdown" class="hidden border-t border-white/10 bg-ink lg:hidden">
-        <nav aria-label="Principal" class="flex flex-col gap-1 px-5 py-6">
+        <nav aria-label={t("nav.main")} class="flex flex-col gap-1 px-5 py-6">
             {
                 navItems.map((item) => (
                     <a href={item.href} class="mobile-link py-3 font-display text-2xl font-bold text-white">
@@ -101,6 +116,10 @@ const navItems = [
             <div class="mt-5 flex items-center gap-3 border-t border-white/10 pt-6">
                 <a
                     href={esHref}
+                    aria-label="Español"
+                    lang="es"
+                    hreflang="es"
+                    aria-current={lang === "es" ? "true" : undefined}
                     class:list={[
                         "rounded-full px-4 py-2.5 text-sm font-semibold",
                         lang === "es" ? "bg-lime text-ink" : "border border-white/25 text-white",
@@ -108,6 +127,10 @@ const navItems = [
                 >
                 <a
                     href={enHref}
+                    aria-label="English"
+                    lang="en"
+                    hreflang="en"
+                    aria-current={lang === "en" ? "true" : undefined}
                     class:list={[
                         "rounded-full px-4 py-2.5 text-sm font-semibold",
                         lang === "en" ? "bg-lime text-ink" : "border border-white/25 text-white",
@@ -140,6 +163,7 @@ const navItems = [
         isOpen = !isOpen;
         mobileDropdown?.classList.toggle("hidden", !isOpen);
         mobileToggle?.setAttribute("aria-expanded", String(isOpen));
+        mobileToggle?.setAttribute("aria-label", (isOpen ? mobileToggle.dataset.labelClose : mobileToggle.dataset.labelOpen) ?? "");
         menuIcon!.innerHTML = isOpen ? CLOSE_PATH : MENU_PATH;
         updateBackground();
     };
@@ -148,6 +172,12 @@ const navItems = [
     updateBackground();
 
     mobileToggle?.addEventListener("click", toggleMenu);
+    // Escape closes the menu and returns focus to its button
+    document.addEventListener("keydown", (e) => {
+        if (e.key !== "Escape" || !isOpen) return;
+        toggleMenu();
+        mobileToggle?.focus();
+    });
     mobileLinks.forEach((link) => {
         link.addEventListener("click", () => {
             if (isOpen) toggleMenu();

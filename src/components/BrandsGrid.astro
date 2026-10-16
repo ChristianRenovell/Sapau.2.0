@@ -15,7 +15,7 @@ const filters = [
 ];
 ---
 
-<section id="marcas" class="mx-auto max-w-7xl scroll-mt-20 px-5 py-24 md:px-8 md:pb-32">
+<section id="marcas" class="mx-auto max-w-7xl px-5 py-24 md:px-8 md:pb-32">
     <div class="mb-10 flex flex-wrap items-end justify-between gap-6">
         <div class="flex flex-col gap-4">
             <div class="eyebrow">{t("brands.eyebrow")}</div>
@@ -43,7 +43,7 @@ const filters = [
                 <a
                     href={`${base}/brands/${brand.slug}`}
                     data-area={brand.area}
-                    class="group flex min-h-[210px] flex-col justify-between gap-6 rounded-[22px] border border-line bg-white p-6 transition-all duration-300 hover:-translate-y-1 hover:border-ink hover:shadow-xl"
+                    class="group flex min-h-[210px] flex-col justify-between gap-6 rounded-[22px] border border-line bg-white p-6 transition-all duration-300 motion-safe:hover:-translate-y-1 hover:border-ink hover:shadow-xl"
                 >
                     <div class="flex items-center justify-between gap-3">
                         <span class="text-xs font-semibold tracking-[0.14em] text-ocean uppercase">
@@ -57,7 +57,7 @@ const filters = [
                                 src={getLogoPath(brand.logo)}
                                 alt={brand.brand}
                                 loading="lazy"
-                                class="max-h-full max-w-[75%] object-contain object-left transition-transform duration-300 group-hover:scale-105"
+                                class="max-h-full max-w-[75%] object-contain object-left transition-transform duration-300 motion-safe:group-hover:scale-105"
                             />
                         </div>
                     ) : (
